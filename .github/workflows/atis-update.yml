@@ -1,0 +1,29 @@
+name: Update ATIS Data
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '4,14,24,34,44,54 * * * *'
+permissions:
+  contents: write
+concurrency:
+  group: niltsi-atis-update
+  cancel-in-progress: false
+jobs:
+  update-atis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Retrieve atis.info ATIS snapshots
+        run: python scripts/update_atis.py
+      - name: Commit ATIS data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/atis.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Update ATIS snapshot"
+            git push
+          fi
