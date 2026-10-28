@@ -4,3 +4,13 @@
 /* Niltsi v0.3: wind component thresholds and ATIS */
 .headwind{color:#50d58b;font-weight:750}.tailwind-low{color:#f5c451;font-weight:750}.tailwind-high{color:#f16d6d;font-weight:750}.crosswind-low{color:#fff;font-weight:700}.crosswind-mid{color:#f5c451;font-weight:750}.crosswind-high{color:#f16d6d;font-weight:750}
 .atis{margin:0 18px 14px;border:1px solid var(--line);border-radius:9px;background:#10202e;padding:12px}.atis-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.atis-top h3{font-size:12px;letter-spacing:.08em;margin:0;color:var(--muted)}.atis-meta{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}.atis-meta strong{color:var(--text)}.atis-runways{display:grid;grid-template-columns:1fr 1fr;gap:8px}.atis-box{background:#20384b;border-radius:7px;padding:11px;min-width:0}.atis-label{font-size:11px;color:#a9c4d8;letter-spacing:.04em}.atis-value{font-size:20px;font-weight:750;margin-top:4px}.atis-full{border-top:1px solid var(--line);margin-top:11px;padding-top:9px;color:var(--muted);font-size:12px}.atis-full summary{cursor:pointer;color:var(--blue)}.atis-full p{margin:8px 0 0}
+
+/* Niltsi v0.6: compact chrome, no overview heading */
+header{padding:8px 24px;min-height:48px;gap:12px}
+.brand{gap:0}.brand h1{font-size:17px;letter-spacing:.11em;white-space:nowrap}
+.brand h1 .version{font-size:12px;font-weight:500;letter-spacing:0;color:var(--muted);margin-left:5px}
+.clock{margin-top:0;font-size:13px}
+main{padding-top:14px}
+.toolbar{justify-content:flex-end;align-items:center;margin-bottom:12px;min-height:36px}
+.airport-head{align-items:center}
+@media(max-width:700px){header{flex-direction:row;align-items:center;padding:9px 14px}.header-right{text-align:right}.toolbar{flex-direction:row;justify-content:flex-end;align-items:center}main{padding:12px}.clock{font-size:11px}}
