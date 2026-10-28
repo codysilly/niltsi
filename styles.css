@@ -14,3 +14,12 @@ main{padding-top:14px}
 .toolbar{justify-content:flex-end;align-items:center;margin-bottom:12px;min-height:36px}
 .airport-head{align-items:center}
 @media(max-width:700px){header{flex-direction:row;align-items:center;padding:9px 14px}.header-right{text-align:right}.toolbar{flex-direction:row;justify-content:flex-end;align-items:center}main{padding:12px}.clock{font-size:11px}}
+
+/* Niltsi v0.7: compact airport title bars and squared-off interface */
+.airport-head{padding:8px 18px;min-height:46px}
+.icao{font-size:20px;line-height:1.15}
+.name{font-size:11px;line-height:1.2;margin-top:2px}
+.airport,.atis,.atis-box,.sources,input,button,.notice{border-radius:0}
+.atis{border-radius:0}
+
+.gust{font-size:11px;line-height:1.25;margin-top:2px;opacity:.9;white-space:nowrap}
