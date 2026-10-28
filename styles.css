@@ -23,3 +23,8 @@ main{padding-top:14px}
 .atis{border-radius:0}
 
 .gust{font-size:11px;line-height:1.25;margin-top:2px;opacity:.9;white-space:nowrap}
+
+/* v0.8 ATIS details */
+.atis-provider{font-weight:400;letter-spacing:0;color:var(--muted);font-size:10px;margin-left:7px}
+.atis-raw{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}
+.atis-value{overflow-wrap:anywhere;font-size:18px}
