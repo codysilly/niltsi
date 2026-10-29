@@ -1,50 +1,50 @@
 {
   "source": "FAA NASR 28-Day Subscription \u2014 APT_RWY_END.csv",
-  "source_url": "https://nfdc.faa.gov/webContent/28DaySub/extra/01_Oct_2026_APT_CSV.zip",
-  "effective_date": "2026-10-01",
-  "generated_utc": "2026-10-28T14:12:52.664645+00:00",
+  "source_url": "https://nfdc.faa.gov/webContent/28DaySub/extra/29_Oct_2026_APT_CSV.zip",
+  "effective_date": "2026-10-29",
+  "generated_utc": "2026-10-29T18:33:09.636073+00:00",
   "heading_reference": "TRUE",
   "airports": {
-    "JFK": [
+    "LAX": [
       {
-        "id": "04L",
-        "true_heading": 31.0,
-        "pair": "04L/22R"
+        "id": "06L",
+        "true_heading": 83.0,
+        "pair": "06L/24R"
       },
       {
-        "id": "04R",
-        "true_heading": 31.0,
-        "pair": "04R/22L"
+        "id": "06R",
+        "true_heading": 83.0,
+        "pair": "06R/24L"
       },
       {
-        "id": "13L",
-        "true_heading": 121.0,
-        "pair": "13L/31R"
+        "id": "07L",
+        "true_heading": 83.0,
+        "pair": "07L/25R"
       },
       {
-        "id": "13R",
-        "true_heading": 121.0,
-        "pair": "13R/31L"
+        "id": "07R",
+        "true_heading": 83.0,
+        "pair": "07R/25L"
       },
       {
-        "id": "22L",
-        "true_heading": 211.0,
-        "pair": "04R/22L"
+        "id": "24L",
+        "true_heading": 263.0,
+        "pair": "06R/24L"
       },
       {
-        "id": "22R",
-        "true_heading": 211.0,
-        "pair": "04L/22R"
+        "id": "24R",
+        "true_heading": 263.0,
+        "pair": "06L/24R"
       },
       {
-        "id": "31L",
-        "true_heading": 301.0,
-        "pair": "13R/31L"
+        "id": "25L",
+        "true_heading": 263.0,
+        "pair": "07R/25L"
       },
       {
-        "id": "31R",
-        "true_heading": 301.0,
-        "pair": "13L/31R"
+        "id": "25R",
+        "true_heading": 263.0,
+        "pair": "07L/25R"
       }
     ],
     "ORD": [
@@ -129,46 +129,46 @@
         "pair": "10L/28R"
       }
     ],
-    "LAX": [
+    "JFK": [
       {
-        "id": "06L",
-        "true_heading": 83.0,
-        "pair": "06L/24R"
+        "id": "04L",
+        "true_heading": 31.0,
+        "pair": "04L/22R"
       },
       {
-        "id": "06R",
-        "true_heading": 83.0,
-        "pair": "06R/24L"
+        "id": "04R",
+        "true_heading": 31.0,
+        "pair": "04R/22L"
       },
       {
-        "id": "07L",
-        "true_heading": 83.0,
-        "pair": "07L/25R"
+        "id": "13L",
+        "true_heading": 121.0,
+        "pair": "13L/31R"
       },
       {
-        "id": "07R",
-        "true_heading": 83.0,
-        "pair": "07R/25L"
+        "id": "13R",
+        "true_heading": 121.0,
+        "pair": "13R/31L"
       },
       {
-        "id": "24L",
-        "true_heading": 263.0,
-        "pair": "06R/24L"
+        "id": "22L",
+        "true_heading": 211.0,
+        "pair": "04R/22L"
       },
       {
-        "id": "24R",
-        "true_heading": 263.0,
-        "pair": "06L/24R"
+        "id": "22R",
+        "true_heading": 211.0,
+        "pair": "04L/22R"
       },
       {
-        "id": "25L",
-        "true_heading": 263.0,
-        "pair": "07R/25L"
+        "id": "31L",
+        "true_heading": 301.0,
+        "pair": "13R/31L"
       },
       {
-        "id": "25R",
-        "true_heading": 263.0,
-        "pair": "07L/25R"
+        "id": "31R",
+        "true_heading": 301.0,
+        "pair": "13L/31R"
       }
     ]
   }
