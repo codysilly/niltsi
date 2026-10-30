@@ -1,22 +1,25 @@
 {
-  "updated_utc": "2026-10-29T20:35:41.658909+00:00",
+  "updated_utc": "2026-10-30T00:22:19.949617+00:00",
   "source": "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK&format=json",
   "metars": [
     {
       "icaoId": "KJFK",
-      "receiptTime": "2026-10-29T19:54:10.925Z",
-      "obsTime": 1793303460,
-      "reportTime": "2026-10-29T20:00:00.000Z",
-      "temp": 17.8,
-      "dewp": 11.7,
-      "wdir": 200,
+      "receiptTime": "2026-10-29T23:54:09.514Z",
+      "obsTime": 1793317860,
+      "reportTime": "2026-10-30T00:00:00.000Z",
+      "temp": 15.6,
+      "dewp": 13.3,
+      "wdir": 190,
       "wspd": 11,
       "visib": "10+",
-      "altim": 1021.4,
-      "slp": 1021.2,
+      "altim": 1020.1,
+      "slp": 1019.8,
       "qcField": 12,
+      "presTend": -1.1,
+      "maxT": 18.3,
+      "minT": 15.6,
       "metarType": "METAR",
-      "rawOb": "METAR KJFK 291951Z 20011KT 10SM FEW038 FEW080 18/12 A3016 RMK AO2 SLP212 T01780117 $",
+      "rawOb": "METAR KJFK 292351Z 19011KT 10SM FEW250 16/13 A3012 RMK AO2 SLP198 T01560133 10183 20156 56011 $",
       "lat": 40.6392,
       "lon": -73.7639,
       "elev": 3,
@@ -25,30 +28,29 @@
       "clouds": [
         {
           "cover": "FEW",
-          "base": 3800
-        },
-        {
-          "cover": "FEW",
-          "base": 8000
+          "base": 25000
         }
       ],
       "fltCat": "VFR"
     },
     {
       "icaoId": "KLAX",
-      "receiptTime": "2026-10-29T19:56:36.048Z",
-      "obsTime": 1793303580,
-      "reportTime": "2026-10-29T20:00:00.000Z",
-      "temp": 22.2,
-      "dewp": 15,
-      "wdir": 240,
-      "wspd": 9,
+      "receiptTime": "2026-10-29T23:56:35.251Z",
+      "obsTime": 1793317980,
+      "reportTime": "2026-10-30T00:00:00.000Z",
+      "temp": 21.1,
+      "dewp": 14.4,
+      "wdir": 250,
+      "wspd": 10,
       "visib": "10+",
-      "altim": 1012.6,
-      "slp": 1012.2,
+      "altim": 1011.3,
+      "slp": 1010.8,
       "qcField": 4,
+      "presTend": -0.6,
+      "maxT": 22.8,
+      "minT": 21.1,
       "metarType": "METAR",
-      "rawOb": "METAR KLAX 291953Z 24009KT 10SM FEW018 SCT035 BKN060 BKN140 22/15 A2990 RMK AO2 SLP122 T02220150",
+      "rawOb": "METAR KLAX 292353Z 25010KT 10SM FEW015 BKN060 BKN250 21/14 A2986 RMK AO2 SLP108 T02110144 10228 20211 55006",
       "lat": 33.9382,
       "lon": -118.3866,
       "elev": 30,
@@ -57,11 +59,7 @@
       "clouds": [
         {
           "cover": "FEW",
-          "base": 1800
-        },
-        {
-          "cover": "SCT",
-          "base": 3500
+          "base": 1500
         },
         {
           "cover": "BKN",
@@ -69,43 +67,39 @@
         },
         {
           "cover": "BKN",
-          "base": 14000
+          "base": 25000
         }
       ],
       "fltCat": "VFR"
     },
     {
       "icaoId": "KORD",
-      "receiptTime": "2026-10-29T19:54:10.992Z",
-      "obsTime": 1793303460,
-      "reportTime": "2026-10-29T20:00:00.000Z",
-      "temp": 20,
-      "dewp": 10.6,
-      "wdir": 320,
+      "receiptTime": "2026-10-29T22:54:08.637Z",
+      "obsTime": 1793314260,
+      "reportTime": "2026-10-29T23:00:00.000Z",
+      "temp": 18.3,
+      "dewp": 3.3,
+      "wdir": 310,
       "wspd": 9,
       "visib": "10+",
-      "altim": 1019.4,
-      "slp": 1019,
+      "altim": 1021.1,
+      "slp": 1020.9,
       "qcField": 4,
       "metarType": "METAR",
-      "rawOb": "METAR KORD 291951Z 32009KT 10SM FEW027 SCT038 SCT046 20/11 A3010 RMK AO2 SLP190 T02000106",
+      "rawOb": "METAR KORD 292251Z 31009KT 10SM FEW035 FEW250 18/03 A3015 RMK AO2 SLP209 T01830033",
       "lat": 41.9602,
       "lon": -87.9316,
       "elev": 202,
       "name": "Chicago/O'Hare Intl, IL, US",
-      "cover": "SCT",
+      "cover": "FEW",
       "clouds": [
         {
           "cover": "FEW",
-          "base": 2700
+          "base": 3500
         },
         {
-          "cover": "SCT",
-          "base": 3800
-        },
-        {
-          "cover": "SCT",
-          "base": 4600
+          "cover": "FEW",
+          "base": 25000
         }
       ],
       "fltCat": "VFR"
