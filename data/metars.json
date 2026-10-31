@@ -1,35 +1,31 @@
 {
-  "updated_utc": "2026-10-30T22:39:54.577558+00:00",
+  "updated_utc": "2026-10-31T01:50:32.094200+00:00",
   "source": "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK&format=json",
   "metars": [
     {
       "icaoId": "KJFK",
-      "receiptTime": "2026-10-30T21:54:12.172Z",
-      "obsTime": 1793397060,
-      "reportTime": "2026-10-30T22:00:00.000Z",
-      "temp": 15.6,
-      "dewp": 2.2,
+      "receiptTime": "2026-10-31T00:54:08.983Z",
+      "obsTime": 1793407860,
+      "reportTime": "2026-10-31T01:00:00.000Z",
+      "temp": 12.8,
+      "dewp": 1.1,
       "wdir": 330,
-      "wspd": 20,
-      "wgst": 28,
+      "wspd": 13,
+      "wgst": 26,
       "visib": "10+",
-      "altim": 1020.4,
-      "slp": 1020.2,
+      "altim": 1024.1,
+      "slp": 1024,
       "qcField": 12,
       "metarType": "METAR",
-      "rawOb": "METAR KJFK 302151Z 33020G28KT 10SM FEW055 SCT250 16/02 A3013 RMK AO2 PK WND 33028/2149 SLP202 T01560022 $",
+      "rawOb": "METAR KJFK 310051Z 33013G26KT 10SM FEW250 13/01 A3024 RMK AO2 PK WND 33026/2354 SLP240 T01280011 $",
       "lat": 40.6392,
       "lon": -73.7639,
       "elev": 3,
       "name": "New York/JF Kennedy Intl, NY, US",
-      "cover": "SCT",
+      "cover": "FEW",
       "clouds": [
         {
           "cover": "FEW",
-          "base": 5500
-        },
-        {
-          "cover": "SCT",
           "base": 25000
         }
       ],
@@ -37,19 +33,19 @@
     },
     {
       "icaoId": "KLAX",
-      "receiptTime": "2026-10-30T21:56:33.769Z",
-      "obsTime": 1793397180,
-      "reportTime": "2026-10-30T22:00:00.000Z",
-      "temp": 21.1,
-      "dewp": 12.2,
-      "wdir": 280,
-      "wspd": 8,
+      "receiptTime": "2026-10-31T00:56:39.113Z",
+      "obsTime": 1793407980,
+      "reportTime": "2026-10-31T01:00:00.000Z",
+      "temp": 20,
+      "dewp": 13.3,
+      "wdir": 220,
+      "wspd": 7,
       "visib": "10+",
-      "altim": 1011.9,
+      "altim": 1011.6,
       "slp": 1011.4,
       "qcField": 4,
       "metarType": "METAR",
-      "rawOb": "METAR KLAX 302153Z 28008KT 10SM BKN030 BKN043 BKN061 21/12 A2988 RMK AO2 SLP114 T02110122",
+      "rawOb": "METAR KLAX 310053Z 22007KT 10SM FEW031 BKN038 BKN055 20/13 A2987 RMK AO2 SLP114 T02000133",
       "lat": 33.9382,
       "lon": -118.3866,
       "elev": 30,
@@ -57,36 +53,35 @@
       "cover": "BKN",
       "clouds": [
         {
-          "cover": "BKN",
-          "base": 3000
+          "cover": "FEW",
+          "base": 3100
         },
         {
           "cover": "BKN",
-          "base": 4300
+          "base": 3800
         },
         {
           "cover": "BKN",
-          "base": 6100
+          "base": 5500
         }
       ],
-      "fltCat": "MVFR"
+      "fltCat": "VFR"
     },
     {
       "icaoId": "KORD",
-      "receiptTime": "2026-10-30T21:54:12.571Z",
-      "obsTime": 1793397060,
-      "reportTime": "2026-10-30T22:00:00.000Z",
+      "receiptTime": "2026-10-31T00:54:09.179Z",
+      "obsTime": 1793407860,
+      "reportTime": "2026-10-31T01:00:00.000Z",
       "temp": 12.2,
       "dewp": 8.3,
-      "wdir": 90,
-      "wspd": 7,
+      "wdir": 70,
+      "wspd": 8,
       "visib": "10+",
-      "altim": 1028.2,
-      "slp": 1028.3,
+      "altim": 1028.5,
+      "slp": 1028.7,
       "qcField": 4,
-      "precip": 0.005,
       "metarType": "METAR",
-      "rawOb": "METAR KORD 302151Z 09007KT 10SM FEW016 BKN085 OVC095 12/08 A3036 RMK AO2 RAE24 SLP283 P0000 T01220083",
+      "rawOb": "METAR KORD 310051Z 07008KT 10SM OVC065 12/08 A3037 RMK AO2 SLP287 T01220083",
       "lat": 41.9602,
       "lon": -87.9316,
       "elev": 202,
@@ -94,16 +89,8 @@
       "cover": "OVC",
       "clouds": [
         {
-          "cover": "FEW",
-          "base": 1600
-        },
-        {
-          "cover": "BKN",
-          "base": 8500
-        },
-        {
           "cover": "OVC",
-          "base": 9500
+          "base": 6500
         }
       ],
       "fltCat": "VFR"
