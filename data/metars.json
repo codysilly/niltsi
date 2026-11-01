@@ -1,35 +1,28 @@
 {
-  "updated_utc": "2026-11-01T18:49:43.316225+00:00",
+  "updated_utc": "2026-11-01T22:28:56.813235+00:00",
   "source": "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK&format=json",
   "metars": [
     {
       "icaoId": "KJFK",
-      "receiptTime": "2026-11-01T17:56:29.917Z",
-      "obsTime": 1793555460,
-      "reportTime": "2026-11-01T18:00:00.000Z",
-      "temp": 13.9,
-      "dewp": 3.9,
-      "wdir": 220,
-      "wspd": 8,
+      "receiptTime": "2026-11-01T21:56:55.557Z",
+      "obsTime": 1793569860,
+      "reportTime": "2026-11-01T22:00:00.000Z",
+      "temp": 11.1,
+      "dewp": 5.6,
+      "wdir": 200,
+      "wspd": 6,
       "visib": "10+",
-      "altim": 1033.6,
-      "slp": 1033.4,
+      "altim": 1032.3,
+      "slp": 1032.1,
       "qcField": 8,
-      "presTend": -1.8,
-      "maxT": 14.4,
-      "minT": 7.2,
       "metarType": "METAR",
-      "rawOb": "METAR KJFK 011751Z 22008KT 10SM FEW200 BKN250 14/04 A3052 RMK SLP334 T01390039 10144 20072 58018 $",
+      "rawOb": "METAR KJFK 012151Z 20006KT 10SM BKN250 11/06 A3048 RMK SLP321 T01110056 $",
       "lat": 40.6392,
       "lon": -73.7639,
       "elev": 3,
       "name": "New York/JF Kennedy Intl, NY, US",
       "cover": "BKN",
       "clouds": [
-        {
-          "cover": "FEW",
-          "base": 20000
-        },
         {
           "cover": "BKN",
           "base": 25000
@@ -39,67 +32,57 @@
     },
     {
       "icaoId": "KLAX",
-      "receiptTime": "2026-11-01T17:56:24.951Z",
-      "obsTime": 1793555580,
-      "reportTime": "2026-11-01T18:00:00.000Z",
-      "temp": 19.4,
-      "dewp": 13.9,
-      "wdir": 250,
-      "wspd": 7,
+      "receiptTime": "2026-11-01T21:56:28.662Z",
+      "obsTime": 1793569980,
+      "reportTime": "2026-11-01T22:00:00.000Z",
+      "temp": 21.1,
+      "dewp": 11.7,
+      "wdir": 270,
+      "wspd": 29,
+      "wgst": 35,
       "visib": "10+",
       "altim": 1010.6,
-      "slp": 1010.4,
+      "slp": 1010.2,
       "qcField": 12,
-      "presTend": 1.3,
-      "maxT": 19.4,
-      "minT": 15.6,
-      "pcp6hr": 0.02,
       "metarType": "METAR",
-      "rawOb": "METAR KLAX 011753Z 25007KT 10SM FEW028 SCT038 SCT060 BKN130 BKN180 19/14 A2984 RMK AO2 SLP104 60002 T01940139 10194 20156 51013 $",
+      "rawOb": "METAR KLAX 012153Z 27029G35KT 10SM FEW042 SCT065 SCT095 21/12 A2984 RMK AO2 PK WND 28035/2150 SLP102 T02110117 $",
       "lat": 33.9382,
       "lon": -118.3866,
       "elev": 30,
       "name": "Los Angeles Intl, CA, US",
-      "cover": "BKN",
+      "cover": "SCT",
       "clouds": [
         {
           "cover": "FEW",
-          "base": 2800
+          "base": 4200
         },
         {
           "cover": "SCT",
-          "base": 3800
+          "base": 6500
         },
         {
           "cover": "SCT",
-          "base": 6000
-        },
-        {
-          "cover": "BKN",
-          "base": 13000
+          "base": 9500
         }
       ],
       "fltCat": "VFR"
     },
     {
       "icaoId": "KORD",
-      "receiptTime": "2026-11-01T17:54:08.002Z",
-      "obsTime": 1793555460,
-      "reportTime": "2026-11-01T18:00:00.000Z",
-      "temp": 16.7,
-      "dewp": 11.1,
-      "wdir": 90,
-      "wspd": 5,
+      "receiptTime": "2026-11-01T21:54:07.691Z",
+      "obsTime": 1793569860,
+      "reportTime": "2026-11-01T22:00:00.000Z",
+      "temp": 15.6,
+      "dewp": 11.7,
+      "wdir": 150,
+      "wspd": 8,
       "visib": "10+",
-      "altim": 1026.5,
-      "slp": 1026.4,
+      "altim": 1025.5,
+      "slp": 1025.4,
       "qcField": 12,
-      "presTend": -1.5,
-      "maxT": 16.7,
-      "minT": 11.7,
-      "pcp6hr": 0.01,
+      "precip": 0.005,
       "metarType": "METAR",
-      "rawOb": "METAR KORD 011751Z 09005KT 10SM BKN085 OVC120 17/11 A3031 RMK AO2 SLP264 60001 T01670111 10167 20117 58015 $",
+      "rawOb": "METAR KORD 012151Z 15008KT 10SM FEW055 BKN075 OVC120 16/12 A3028 RMK AO2 DZE2052 SLP254 P0000 T01560117 $",
       "lat": 41.9602,
       "lon": -87.9316,
       "elev": 202,
@@ -107,8 +90,12 @@
       "cover": "OVC",
       "clouds": [
         {
+          "cover": "FEW",
+          "base": 5500
+        },
+        {
           "cover": "BKN",
-          "base": 8500
+          "base": 7500
         },
         {
           "cover": "OVC",
