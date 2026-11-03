@@ -1,30 +1,34 @@
 {
-  "updated_utc": "2026-11-03T01:20:26.430527+00:00",
+  "updated_utc": "2026-11-03T16:13:02.155588+00:00",
   "source": "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK&format=json",
   "metars": [
     {
       "icaoId": "KJFK",
-      "receiptTime": "2026-11-03T00:56:20.095Z",
-      "obsTime": 1793667060,
-      "reportTime": "2026-11-03T01:00:00.000Z",
-      "temp": 13.3,
-      "dewp": 10.6,
-      "wdir": 210,
-      "wspd": 9,
+      "receiptTime": "2026-11-03T15:56:44.934Z",
+      "obsTime": 1793721060,
+      "reportTime": "2026-11-03T16:00:00.000Z",
+      "temp": 16.7,
+      "dewp": 8.3,
+      "wdir": 250,
+      "wspd": 10,
       "visib": "10+",
-      "altim": 1027.9,
-      "slp": 1027.7,
-      "qcField": 8,
+      "altim": 1026.8,
+      "slp": 1026.7,
+      "qcField": 0,
       "metarType": "METAR",
-      "rawOb": "METAR KJFK 030051Z 21009KT 10SM SCT250 13/11 A3035 RMK SLP277 T01330106 $",
+      "rawOb": "METAR KJFK 031551Z 25010KT 10SM BKN110 BKN250 17/08 A3032 RMK SLP267 T01670083",
       "lat": 40.6392,
       "lon": -73.7639,
       "elev": 3,
       "name": "New York/JF Kennedy Intl, NY, US",
-      "cover": "SCT",
+      "cover": "BKN",
       "clouds": [
         {
-          "cover": "SCT",
+          "cover": "BKN",
+          "base": 11000
+        },
+        {
+          "cover": "BKN",
           "base": 25000
         }
       ],
@@ -32,60 +36,80 @@
     },
     {
       "icaoId": "KLAX",
-      "receiptTime": "2026-11-03T00:56:27.693Z",
-      "obsTime": 1793667180,
-      "reportTime": "2026-11-03T01:00:00.000Z",
-      "temp": 21.1,
-      "dewp": 12.8,
-      "wdir": 290,
-      "wspd": 12,
+      "receiptTime": "2026-11-03T15:56:49.600Z",
+      "obsTime": 1793721180,
+      "reportTime": "2026-11-03T16:00:00.000Z",
+      "temp": 18.3,
+      "dewp": 9.4,
+      "wdir": 20,
+      "wspd": 3,
       "visib": "10+",
-      "altim": 1018.4,
-      "slp": 1018.3,
+      "altim": 1018.7,
+      "slp": 1018.4,
       "qcField": 12,
       "metarType": "METAR",
-      "rawOb": "METAR KLAX 030053Z 29012KT 10SM FEW250 21/13 A3007 RMK AO2 SLP183 T02110128 $",
+      "rawOb": "METAR KLAX 031553Z 02003KT 10SM FEW100 SCT140 BKN180 BKN280 18/09 A3008 RMK AO2 SLP184 T01830094 $",
       "lat": 33.9382,
       "lon": -118.3866,
       "elev": 30,
       "name": "Los Angeles Intl, CA, US",
-      "cover": "FEW",
+      "cover": "BKN",
       "clouds": [
         {
           "cover": "FEW",
-          "base": 25000
+          "base": 10000
+        },
+        {
+          "cover": "SCT",
+          "base": 14000
+        },
+        {
+          "cover": "BKN",
+          "base": 18000
+        },
+        {
+          "cover": "BKN",
+          "base": 28000
         }
       ],
       "fltCat": "VFR"
     },
     {
       "icaoId": "KORD",
-      "receiptTime": "2026-11-03T00:54:07.400Z",
-      "obsTime": 1793667060,
-      "reportTime": "2026-11-03T01:00:00.000Z",
-      "temp": 15.6,
-      "dewp": 13.9,
-      "wdir": 180,
-      "wspd": 11,
-      "wgst": 24,
-      "visib": 9,
-      "altim": 1016,
-      "slp": 1015.7,
+      "receiptTime": "2026-11-03T15:54:12.603Z",
+      "obsTime": 1793721060,
+      "reportTime": "2026-11-03T16:00:00.000Z",
+      "temp": 20,
+      "dewp": 15.6,
+      "wdir": 190,
+      "wspd": 16,
+      "wgst": 23,
+      "visib": "10+",
+      "altim": 1012.3,
+      "slp": 1011.9,
       "qcField": 12,
       "metarType": "METAR",
-      "rawOb": "METAR KORD 030051Z 18011G24KT 9SM OVC008 16/14 A3000 RMK AO2 SLP157 T01560139 $",
+      "rawOb": "METAR KORD 031551Z 19016G23KT 10SM FEW020 BKN080 BKN250 20/16 A2989 RMK AO2 PK WND 19031/1504 SLP119 T02000156 $",
       "lat": 41.9602,
       "lon": -87.9316,
       "elev": 202,
       "name": "Chicago/O'Hare Intl, IL, US",
-      "cover": "OVC",
+      "cover": "BKN",
       "clouds": [
         {
-          "cover": "OVC",
-          "base": 800
+          "cover": "FEW",
+          "base": 2000
+        },
+        {
+          "cover": "BKN",
+          "base": 8000
+        },
+        {
+          "cover": "BKN",
+          "base": 25000
         }
       ],
-      "fltCat": "IFR"
+      "fltCat": "VFR"
     }
   ]
 }
