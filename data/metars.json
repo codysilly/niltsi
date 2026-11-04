@@ -1,33 +1,28 @@
 {
-  "updated_utc": "2026-11-03T21:51:15.383785+00:00",
+  "updated_utc": "2026-11-04T01:46:29.463038+00:00",
   "source": "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK&format=json",
   "metars": [
     {
       "icaoId": "KJFK",
-      "receiptTime": "2026-11-03T20:56:35.767Z",
-      "obsTime": 1793739060,
-      "reportTime": "2026-11-03T21:00:00.000Z",
-      "temp": 16.7,
-      "dewp": 12.2,
-      "wdir": 180,
+      "receiptTime": "2026-11-04T00:56:22.066Z",
+      "obsTime": 1793753460,
+      "reportTime": "2026-11-04T01:00:00.000Z",
+      "temp": 15,
+      "dewp": 12.8,
+      "wdir": 200,
       "wspd": 8,
       "visib": "10+",
-      "altim": 1024.1,
-      "slp": 1023.9,
-      "qcField": 0,
-      "presTend": -0.9,
+      "altim": 1024.5,
+      "slp": 1024.3,
+      "qcField": 8,
       "metarType": "METAR",
-      "rawOb": "METAR KJFK 032051Z 18008KT 10SM FEW060 FEW100 BKN250 17/12 A3024 RMK SLP239 T01670122 56009",
+      "rawOb": "METAR KJFK 040051Z 20008KT 10SM FEW100 BKN250 15/13 A3025 RMK SLP243 T01500128 $",
       "lat": 40.6392,
       "lon": -73.7639,
       "elev": 3,
       "name": "New York/JF Kennedy Intl, NY, US",
       "cover": "BKN",
       "clouds": [
-        {
-          "cover": "FEW",
-          "base": 6000
-        },
         {
           "cover": "FEW",
           "base": 10000
@@ -41,35 +36,31 @@
     },
     {
       "icaoId": "KLAX",
-      "receiptTime": "2026-11-03T21:30:06.430Z",
-      "obsTime": 1793741220,
-      "reportTime": "2026-11-03T21:27:00.000Z",
-      "temp": 22.2,
+      "receiptTime": "2026-11-04T00:56:31.843Z",
+      "obsTime": 1793753580,
+      "reportTime": "2026-11-04T01:00:00.000Z",
+      "temp": 20.6,
       "dewp": 14.4,
       "wdir": 260,
-      "wspd": 15,
-      "wgst": 20,
+      "wspd": 13,
       "visib": "10+",
-      "altim": 1016.3,
+      "altim": 1015.3,
+      "slp": 1015,
       "qcField": 12,
-      "metarType": "SPECI",
-      "rawOb": "SPECI KLAX 032127Z 26015G20KT 10SM FEW008 FEW080 SCT250 22/14 A3001 RMK AO2 T02220144 $",
+      "metarType": "METAR",
+      "rawOb": "METAR KLAX 040053Z 26013KT 10SM FEW010 FEW250 21/14 A2998 RMK AO2 SLP150 T02060144 $",
       "lat": 33.9382,
       "lon": -118.3866,
       "elev": 30,
       "name": "Los Angeles Intl, CA, US",
-      "cover": "SCT",
+      "cover": "FEW",
       "clouds": [
         {
           "cover": "FEW",
-          "base": 800
+          "base": 1000
         },
         {
           "cover": "FEW",
-          "base": 8000
-        },
-        {
-          "cover": "SCT",
           "base": 25000
         }
       ],
@@ -77,22 +68,20 @@
     },
     {
       "icaoId": "KORD",
-      "receiptTime": "2026-11-03T20:54:07.212Z",
-      "obsTime": 1793739060,
-      "reportTime": "2026-11-03T21:00:00.000Z",
-      "temp": 21.1,
-      "dewp": 16.1,
-      "wdir": 180,
-      "wspd": 10,
-      "wgst": 24,
+      "receiptTime": "2026-11-04T00:54:08.479Z",
+      "obsTime": 1793753460,
+      "reportTime": "2026-11-04T01:00:00.000Z",
+      "temp": 18.9,
+      "dewp": 16.7,
+      "wdir": 160,
+      "wspd": 11,
       "visib": "10+",
-      "altim": 1010.6,
-      "slp": 1010.2,
+      "altim": 1009.6,
+      "slp": 1009,
       "qcField": 12,
-      "presTend": -0.6,
-      "pcp3hr": 0.005,
+      "precip": 0.005,
       "metarType": "METAR",
-      "rawOb": "METAR KORD 032051Z 18010G24KT 10SM BKN030 OVC070 21/16 A2984 RMK AO2 PK WND 18030/2029 SLP102 60000 T02110161 56006 $",
+      "rawOb": "METAR KORD 040051Z 16011KT 10SM FEW029 SCT055 BKN075 OVC130 19/17 A2981 RMK AO2 PK WND 17030/0006 RAB04E36 SLP090 P0000 T01890167 $",
       "lat": 41.9602,
       "lon": -87.9316,
       "elev": 202,
@@ -100,15 +89,23 @@
       "cover": "OVC",
       "clouds": [
         {
+          "cover": "FEW",
+          "base": 2900
+        },
+        {
+          "cover": "SCT",
+          "base": 5500
+        },
+        {
           "cover": "BKN",
-          "base": 3000
+          "base": 7500
         },
         {
           "cover": "OVC",
-          "base": 7000
+          "base": 13000
         }
       ],
-      "fltCat": "MVFR"
+      "fltCat": "VFR"
     }
   ]
 }
