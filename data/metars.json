@@ -1,34 +1,30 @@
 {
-  "updated_utc": "2026-11-04T01:46:29.463038+00:00",
+  "updated_utc": "2026-11-04T08:09:30.288075Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK&format=json",
   "metars": [
     {
       "icaoId": "KJFK",
-      "receiptTime": "2026-11-04T00:56:22.066Z",
-      "obsTime": 1793753460,
-      "reportTime": "2026-11-04T01:00:00.000Z",
-      "temp": 15,
-      "dewp": 12.8,
-      "wdir": 200,
-      "wspd": 8,
+      "receiptTime": "2026-11-04T07:54:07.852Z",
+      "obsTime": 1793778660,
+      "reportTime": "2026-11-04T08:00:00.000Z",
+      "temp": 12.2,
+      "dewp": 11.1,
+      "wdir": 220,
+      "wspd": 5,
       "visib": "10+",
-      "altim": 1024.5,
-      "slp": 1024.3,
+      "altim": 1022.8,
+      "slp": 1022.7,
       "qcField": 8,
       "metarType": "METAR",
-      "rawOb": "METAR KJFK 040051Z 20008KT 10SM FEW100 BKN250 15/13 A3025 RMK SLP243 T01500128 $",
+      "rawOb": "METAR KJFK 040751Z 22005KT 10SM FEW250 12/11 A3020 RMK SLP227 T01220111 $",
       "lat": 40.6392,
       "lon": -73.7639,
       "elev": 3,
       "name": "New York/JF Kennedy Intl, NY, US",
-      "cover": "BKN",
+      "cover": "FEW",
       "clouds": [
         {
           "cover": "FEW",
-          "base": 10000
-        },
-        {
-          "cover": "BKN",
           "base": 25000
         }
       ],
@@ -36,19 +32,21 @@
     },
     {
       "icaoId": "KLAX",
-      "receiptTime": "2026-11-04T00:56:31.843Z",
-      "obsTime": 1793753580,
-      "reportTime": "2026-11-04T01:00:00.000Z",
-      "temp": 20.6,
-      "dewp": 14.4,
-      "wdir": 260,
-      "wspd": 13,
+      "receiptTime": "2026-11-04T07:56:28.279Z",
+      "obsTime": 1793778780,
+      "reportTime": "2026-11-04T08:00:00.000Z",
+      "temp": 17.8,
+      "dewp": 12.8,
+      "wdir": "VRB",
+      "wspd": 4,
       "visib": "10+",
-      "altim": 1015.3,
-      "slp": 1015,
+      "altim": 1014.6,
+      "slp": 1014,
       "qcField": 12,
+      "maxT24": 22.8,
+      "minT24": 13.9,
       "metarType": "METAR",
-      "rawOb": "METAR KLAX 040053Z 26013KT 10SM FEW010 FEW250 21/14 A2998 RMK AO2 SLP150 T02060144 $",
+      "rawOb": "METAR KLAX 040753Z VRB04KT 10SM FEW015 18/13 A2996 RMK AO2 SLP140 T01780128 402280139 $",
       "lat": 33.9382,
       "lon": -118.3866,
       "elev": 30,
@@ -57,31 +55,29 @@
       "clouds": [
         {
           "cover": "FEW",
-          "base": 1000
-        },
-        {
-          "cover": "FEW",
-          "base": 25000
+          "base": 1500
         }
       ],
       "fltCat": "VFR"
     },
     {
       "icaoId": "KORD",
-      "receiptTime": "2026-11-04T00:54:08.479Z",
-      "obsTime": 1793753460,
-      "reportTime": "2026-11-04T01:00:00.000Z",
+      "receiptTime": "2026-11-04T07:54:07.980Z",
+      "obsTime": 1793778660,
+      "reportTime": "2026-11-04T08:00:00.000Z",
       "temp": 18.9,
-      "dewp": 16.7,
-      "wdir": 160,
+      "dewp": 16.1,
+      "wdir": 190,
       "wspd": 11,
-      "visib": "10+",
-      "altim": 1009.6,
-      "slp": 1009,
+      "wgst": 30,
+      "visib": 9,
+      "altim": 1006.2,
+      "slp": 1005.7,
       "qcField": 12,
-      "precip": 0.005,
+      "wxString": "-RA",
+      "precip": 0.01,
       "metarType": "METAR",
-      "rawOb": "METAR KORD 040051Z 16011KT 10SM FEW029 SCT055 BKN075 OVC130 19/17 A2981 RMK AO2 PK WND 17030/0006 RAB04E36 SLP090 P0000 T01890167 $",
+      "rawOb": "METAR KORD 040751Z 19011G30KT 9SM -RA BKN024 OVC100 19/16 A2971 RMK AO2 PK WND 19030/0748 RAB01E11B31 SLP057 P0001 T01890161 $",
       "lat": 41.9602,
       "lon": -87.9316,
       "elev": 202,
@@ -89,23 +85,15 @@
       "cover": "OVC",
       "clouds": [
         {
-          "cover": "FEW",
-          "base": 2900
-        },
-        {
-          "cover": "SCT",
-          "base": 5500
-        },
-        {
           "cover": "BKN",
-          "base": 7500
+          "base": 2400
         },
         {
           "cover": "OVC",
-          "base": 13000
+          "base": 10000
         }
       ],
-      "fltCat": "VFR"
+      "fltCat": "MVFR"
     }
   ]
 }
