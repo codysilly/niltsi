@@ -1,22 +1,22 @@
 {
-  "updated_utc": "2026-11-04T16:19:42.033999Z",
+  "updated_utc": "2026-11-04T21:59:25.182300Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK&format=json",
   "metars": [
     {
       "icaoId": "KJFK",
-      "receiptTime": "2026-11-04T15:54:12.256Z",
-      "obsTime": 1793807460,
-      "reportTime": "2026-11-04T16:00:00.000Z",
-      "temp": 18.9,
-      "dewp": 12.2,
+      "receiptTime": "2026-11-04T21:54:10.063Z",
+      "obsTime": 1793829060,
+      "reportTime": "2026-11-04T22:00:00.000Z",
+      "temp": 18.3,
+      "dewp": 13.3,
       "wdir": 190,
-      "wspd": 7,
+      "wspd": 15,
       "visib": "10+",
-      "altim": 1021.8,
-      "slp": 1021.7,
-      "qcField": 12,
+      "altim": 1018.7,
+      "slp": 1018.4,
+      "qcField": 4,
       "metarType": "METAR",
-      "rawOb": "METAR KJFK 041551Z 19007KT 10SM FEW250 19/12 A3017 RMK AO2 SLP217 T01890122 $",
+      "rawOb": "METAR KJFK 042151Z 19015KT 10SM FEW250 18/13 A3008 RMK AO2 SLP184 T01830133",
       "lat": 40.6392,
       "lon": -73.7639,
       "elev": 3,
@@ -32,75 +32,62 @@
     },
     {
       "icaoId": "KLAX",
-      "receiptTime": "2026-11-04T15:56:57.940Z",
-      "obsTime": 1793807580,
-      "reportTime": "2026-11-04T16:00:00.000Z",
-      "temp": 17.8,
-      "dewp": 11.7,
-      "wdir": 40,
-      "wspd": 7,
+      "receiptTime": "2026-11-04T21:56:27.625Z",
+      "obsTime": 1793829180,
+      "reportTime": "2026-11-04T22:00:00.000Z",
+      "temp": 22.8,
+      "dewp": 12.2,
+      "wdir": 270,
+      "wspd": 11,
       "visib": "10+",
-      "altim": 1015,
-      "slp": 1014.8,
+      "altim": 1012.6,
+      "slp": 1012.3,
       "qcField": 12,
       "metarType": "METAR",
-      "rawOb": "METAR KLAX 041553Z 04007KT 10SM FEW010 FEW045 SCT250 18/12 A2997 RMK AO2 SLP148 T01780117 $",
+      "rawOb": "METAR KLAX 042153Z 27011KT 10SM FEW010 23/12 A2990 RMK AO2 SLP123 T02280122 $",
       "lat": 33.9382,
       "lon": -118.3866,
       "elev": 30,
       "name": "Los Angeles Intl, CA, US",
-      "cover": "SCT",
+      "cover": "FEW",
       "clouds": [
         {
           "cover": "FEW",
           "base": 1000
-        },
-        {
-          "cover": "FEW",
-          "base": 4500
-        },
-        {
-          "cover": "SCT",
-          "base": 25000
         }
       ],
       "fltCat": "VFR"
     },
     {
       "icaoId": "KORD",
-      "receiptTime": "2026-11-04T15:54:11.467Z",
-      "obsTime": 1793807460,
-      "reportTime": "2026-11-04T16:00:00.000Z",
-      "temp": 16.7,
-      "dewp": 13.9,
-      "wdir": 210,
-      "wspd": 11,
-      "wgst": 19,
-      "visib": 9,
-      "altim": 1004.5,
-      "slp": 1004.2,
+      "receiptTime": "2026-11-04T21:54:10.132Z",
+      "obsTime": 1793829060,
+      "reportTime": "2026-11-04T22:00:00.000Z",
+      "temp": 12.8,
+      "dewp": 10,
+      "wdir": 230,
+      "wspd": 9,
+      "wgst": 16,
+      "visib": "10+",
+      "altim": 1004.8,
+      "slp": 1004.6,
       "qcField": 12,
-      "wxString": "-RA",
-      "precip": 0.02,
+      "precip": 0.005,
       "metarType": "METAR",
-      "rawOb": "METAR KORD 041551Z 21011G19KT 9SM -RA SCT014 BKN022 BKN055 17/14 A2966 RMK AO2 RAB1455E32B48 SLP042 P0002 T01670139 $",
+      "rawOb": "METAR KORD 042151Z 23009G16KT 10SM BKN018 OVC046 13/10 A2967 RMK AO2 RAB37E43 SLP046 P0000 T01280100 $",
       "lat": 41.9602,
       "lon": -87.9316,
       "elev": 202,
       "name": "Chicago/O'Hare Intl, IL, US",
-      "cover": "BKN",
+      "cover": "OVC",
       "clouds": [
         {
-          "cover": "SCT",
-          "base": 1400
+          "cover": "BKN",
+          "base": 1800
         },
         {
-          "cover": "BKN",
-          "base": 2200
-        },
-        {
-          "cover": "BKN",
-          "base": 5500
+          "cover": "OVC",
+          "base": 4600
         }
       ],
       "fltCat": "MVFR"
