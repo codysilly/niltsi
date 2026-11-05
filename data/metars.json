@@ -1,79 +1,74 @@
 {
-  "updated_utc": "2026-11-05T17:39:42.727021Z",
+  "updated_utc": "2026-11-05T22:52:59.658703Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK&format=json",
   "metars": [
     {
       "icaoId": "KJFK",
-      "receiptTime": "2026-11-05T16:54:09.324Z",
-      "obsTime": 1793897460,
-      "reportTime": "2026-11-05T17:00:00.000Z",
-      "temp": 18.9,
-      "dewp": 17.2,
+      "receiptTime": "2026-11-05T21:54:08.432Z",
+      "obsTime": 1793915460,
+      "reportTime": "2026-11-05T22:00:00.000Z",
+      "temp": 18.3,
+      "dewp": 16.7,
       "wdir": 190,
-      "wspd": 13,
+      "wspd": 14,
       "visib": "10+",
-      "altim": 1013.6,
-      "slp": 1013.6,
+      "altim": 1011.9,
+      "slp": 1011.8,
       "qcField": 4,
-      "precip": 0.005,
       "metarType": "METAR",
-      "rawOb": "METAR KJFK 051651Z 19013KT 10SM FEW018 FEW045 BKN070 OVC130 19/17 A2993 RMK AO2 RAB12E29 SLP136 P0000 T01890172",
+      "rawOb": "METAR KJFK 052151Z 19014KT 10SM BKN038 BKN049 BKN100 BKN250 18/17 A2988 RMK AO2 SLP118 T01830167",
       "lat": 40.6392,
       "lon": -73.7639,
       "elev": 3,
       "name": "New York/JF Kennedy Intl, NY, US",
-      "cover": "OVC",
+      "cover": "BKN",
       "clouds": [
         {
-          "cover": "FEW",
-          "base": 1800
-        },
-        {
-          "cover": "FEW",
-          "base": 4500
+          "cover": "BKN",
+          "base": 3800
         },
         {
           "cover": "BKN",
-          "base": 7000
+          "base": 4900
         },
         {
-          "cover": "OVC",
-          "base": 13000
+          "cover": "BKN",
+          "base": 10000
+        },
+        {
+          "cover": "BKN",
+          "base": 25000
         }
       ],
       "fltCat": "VFR"
     },
     {
       "icaoId": "KLAX",
-      "receiptTime": "2026-11-05T16:56:35.967Z",
-      "obsTime": 1793897580,
-      "reportTime": "2026-11-05T17:00:00.000Z",
-      "temp": 21.1,
-      "dewp": 9.4,
-      "wdir": 80,
-      "wspd": 4,
+      "receiptTime": "2026-11-05T21:56:33.835Z",
+      "obsTime": 1793915580,
+      "reportTime": "2026-11-05T22:00:00.000Z",
+      "temp": 23.9,
+      "dewp": 11.7,
+      "wdir": 270,
+      "wspd": 12,
       "visib": "10+",
-      "altim": 1015.3,
-      "slp": 1015.1,
+      "altim": 1013.6,
+      "slp": 1013.5,
       "qcField": 12,
       "metarType": "METAR",
-      "rawOb": "METAR KLAX 051653Z 08004KT 10SM FEW080 FEW140 SCT180 21/09 A2998 RMK AO2 SLP151 T02110094 $",
+      "rawOb": "METAR KLAX 052153Z 27012KT 10SM FEW140 FEW180 24/12 A2993 RMK AO2 SLP135 T02390117 $",
       "lat": 33.9382,
       "lon": -118.3866,
       "elev": 30,
       "name": "Los Angeles Intl, CA, US",
-      "cover": "SCT",
+      "cover": "FEW",
       "clouds": [
-        {
-          "cover": "FEW",
-          "base": 8000
-        },
         {
           "cover": "FEW",
           "base": 14000
         },
         {
-          "cover": "SCT",
+          "cover": "FEW",
           "base": 18000
         }
       ],
@@ -81,43 +76,40 @@
     },
     {
       "icaoId": "KORD",
-      "receiptTime": "2026-11-05T16:54:09.510Z",
-      "obsTime": 1793897460,
-      "reportTime": "2026-11-05T17:00:00.000Z",
+      "receiptTime": "2026-11-05T22:14:10.146Z",
+      "obsTime": 1793916660,
+      "reportTime": "2026-11-05T22:11:00.000Z",
       "temp": 11.1,
-      "dewp": 7.8,
-      "wdir": 240,
-      "wspd": 12,
-      "visib": "10+",
-      "altim": 1007.9,
-      "slp": 1007.8,
+      "dewp": 9.4,
+      "wdir": 280,
+      "wspd": 6,
+      "visib": 2.5,
+      "altim": 1009.9,
       "qcField": 12,
-      "metarType": "METAR",
-      "rawOb": "METAR KORD 051651Z 24012KT 10SM BKN015 BKN038 BKN060 BKN250 11/08 A2976 RMK AO2 SLP078 T01110078 $",
+      "wxString": "-RA BR",
+      "precip": 0.005,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KORD 052211Z 28006KT 2 1/2SM R10L/6000VP6000FT -RA BR BKN009 BKN017 OVC026 11/09 A2982 RMK AO2 RAB2158 P0000 T01110094 $",
       "lat": 41.9602,
       "lon": -87.9316,
       "elev": 202,
       "name": "Chicago/O'Hare Intl, IL, US",
-      "cover": "BKN",
+      "cover": "OVC",
       "clouds": [
         {
           "cover": "BKN",
-          "base": 1500
+          "base": 900
         },
         {
           "cover": "BKN",
-          "base": 3800
+          "base": 1700
         },
         {
-          "cover": "BKN",
-          "base": 6000
-        },
-        {
-          "cover": "BKN",
-          "base": 25000
+          "cover": "OVC",
+          "base": 2600
         }
       ],
-      "fltCat": "MVFR"
+      "fltCat": "IFR"
     }
   ]
 }
