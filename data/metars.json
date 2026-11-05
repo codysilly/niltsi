@@ -1,74 +1,96 @@
 {
-  "updated_utc": "2026-11-05T02:15:13.281803Z",
+  "updated_utc": "2026-11-05T09:39:06.965874Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK&format=json",
   "metars": [
     {
       "icaoId": "KJFK",
-      "receiptTime": "2026-11-05T01:54:08.553Z",
-      "obsTime": 1793843460,
-      "reportTime": "2026-11-05T02:00:00.000Z",
-      "temp": 16.7,
-      "dewp": 15,
-      "wdir": 190,
-      "wspd": 10,
-      "visib": "10+",
-      "altim": 1017.7,
-      "slp": 1017.7,
-      "qcField": 4,
+      "receiptTime": "2026-11-05T08:54:09.976Z",
+      "obsTime": 1793868660,
+      "reportTime": "2026-11-05T09:00:00.000Z",
+      "temp": 16.1,
+      "dewp": 16.1,
+      "wdir": 140,
+      "wspd": 4,
+      "visib": 8,
+      "altim": 1015.7,
+      "slp": 1015.4,
+      "qcField": 12,
+      "presTend": -0.8,
       "metarType": "METAR",
-      "rawOb": "METAR KJFK 050151Z 19010KT 10SM SCT250 17/15 A3005 RMK AO2 SLP177 T01670150",
+      "rawOb": "METAR KJFK 050851Z 14004KT 8SM FEW042 OVC050 16/16 A2999 RMK AO2 SLP154 T01610161 58008 $",
       "lat": 40.6392,
       "lon": -73.7639,
       "elev": 3,
       "name": "New York/JF Kennedy Intl, NY, US",
-      "cover": "SCT",
+      "cover": "OVC",
       "clouds": [
         {
-          "cover": "SCT",
-          "base": 25000
+          "cover": "FEW",
+          "base": 4200
+        },
+        {
+          "cover": "OVC",
+          "base": 5000
         }
       ],
       "fltCat": "VFR"
     },
     {
       "icaoId": "KLAX",
-      "receiptTime": "2026-11-05T01:56:29.714Z",
-      "obsTime": 1793843580,
-      "reportTime": "2026-11-05T02:00:00.000Z",
-      "temp": 20.6,
-      "dewp": 15,
-      "wdir": 270,
-      "wspd": 11,
+      "receiptTime": "2026-11-05T08:56:30.439Z",
+      "obsTime": 1793868780,
+      "reportTime": "2026-11-05T09:00:00.000Z",
+      "temp": 17.2,
+      "dewp": 12.8,
+      "wdir": 60,
+      "wspd": 4,
       "visib": "10+",
-      "altim": 1013,
-      "slp": 1012.7,
+      "altim": 1014,
+      "slp": 1013.7,
       "qcField": 12,
+      "presTend": 0.3,
       "metarType": "METAR",
-      "rawOb": "METAR KLAX 050153Z 27011KT 10SM CLR 21/15 A2991 RMK AO2 SLP127 T02060150 $",
+      "rawOb": "METAR KLAX 050853Z 06004KT 10SM FEW024 FEW200 SCT280 17/13 A2994 RMK AO2 SLP137 T01720128 52003 $",
       "lat": 33.9382,
       "lon": -118.3866,
       "elev": 30,
       "name": "Los Angeles Intl, CA, US",
-      "cover": "CLR",
-      "clouds": [],
+      "cover": "SCT",
+      "clouds": [
+        {
+          "cover": "FEW",
+          "base": 2400
+        },
+        {
+          "cover": "FEW",
+          "base": 20000
+        },
+        {
+          "cover": "SCT",
+          "base": 28000
+        }
+      ],
       "fltCat": "VFR"
     },
     {
       "icaoId": "KORD",
-      "receiptTime": "2026-11-05T01:54:07.409Z",
-      "obsTime": 1793843460,
-      "reportTime": "2026-11-05T02:00:00.000Z",
-      "temp": 11.7,
-      "dewp": 9.4,
-      "wdir": 220,
-      "wspd": 9,
-      "wgst": 19,
-      "visib": "10+",
-      "altim": 1005.8,
-      "slp": 1005.7,
+      "receiptTime": "2026-11-05T08:54:10.165Z",
+      "obsTime": 1793868660,
+      "reportTime": "2026-11-05T09:00:00.000Z",
+      "temp": 10,
+      "dewp": 8.9,
+      "wdir": 230,
+      "wspd": 10,
+      "visib": 5,
+      "altim": 1005.5,
+      "slp": 1005.2,
       "qcField": 12,
+      "wxString": "-RA BR",
+      "presTend": -0.2,
+      "precip": 0.03,
+      "pcp3hr": 0.03,
       "metarType": "METAR",
-      "rawOb": "METAR KORD 050151Z 22009G19KT 10SM BKN014 BKN021 OVC055 12/09 A2970 RMK AO2 SLP057 T01170094 $",
+      "rawOb": "METAR KORD 050851Z 23010KT 5SM -RA BR OVC014 10/09 A2969 RMK AO2 RAB02E25B51DZB25E51 SLP052 P0003 60003 T01000089 58002 $",
       "lat": 41.9602,
       "lon": -87.9316,
       "elev": 202,
@@ -76,16 +98,8 @@
       "cover": "OVC",
       "clouds": [
         {
-          "cover": "BKN",
-          "base": 1400
-        },
-        {
-          "cover": "BKN",
-          "base": 2100
-        },
-        {
           "cover": "OVC",
-          "base": 5500
+          "base": 1400
         }
       ],
       "fltCat": "MVFR"
