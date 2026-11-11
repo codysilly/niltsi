@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build verified FAA NASR runway-end true bearings for Niltsi's configured airports."""
+"""Build verified FAA NASR runway-end true bearings for Spatchin's configured airports."""
 import csv
 import io
 import json
