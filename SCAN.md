@@ -1,7 +1,7 @@
 # SCAN — Global Search & Highlight
 
 SCAN adds a compact global search toolbar to the Spatchin dashboard (currently
-branded Niltsi v0.9). Enter comma-separated literal keywords. Each term has a
+branded Spatchin v0.9). Enter comma-separated literal keywords. Each term has a
 persistent color; searches ignore case unless **Case sensitive** is checked.
 **Highlight** disables highlighting without clearing saved terms. **Next** and
 **Previous** wrap through matches in document order. Enter and Shift+Enter in

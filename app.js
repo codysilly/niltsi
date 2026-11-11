@@ -1,5 +1,5 @@
 'use strict';
-// Niltsi v0.9. METARs loaded from GitHub Pages same-origin JSON. Not for operational dispatch use.
+// Spatchin v0.9. METARs loaded from GitHub Pages same-origin JSON. Not for operational dispatch use.
 const runwayPairs={ORD:['04L/22R','04R/22L','09L/27R','09R/27L','09C/27C','10L/28R','10C/28C','10R/28L'],LAX:['06L/24R','06R/24L','07L/25R','07R/25L'],JFK:['04L/22R','04R/22L','13L/31R','13R/31L']};
 const airportInfo={ORD:{name:'Chicago O’Hare',icao:'KORD'},LAX:{name:'Los Angeles International',icao:'KLAX'},JFK:{name:'John F. Kennedy International',icao:'KJFK'}};
 let runwayData=null;
@@ -100,7 +100,7 @@ async function refresh(){
  }catch(e){
   metarFeedError=true;
   for(const code of targets){if(!metars[code])metars[code]={error:'Published METAR feed unavailable',wind:null};}
-  console.error('Niltsi METAR retrieval:',e);
+  console.error('Spatchin METAR retrieval:',e);
  }finally{loading=false;render();}
 }
 document.getElementById('add-form').addEventListener('submit',e=>{e.preventDefault();const f=document.getElementById('iata'),code=f.value.trim().toUpperCase();if(!/^[A-Z]{3}$/.test(code)){alert('Enter a three-letter IATA code.');return;}if(airports.includes(code)){alert(code+' is already displayed.');return;}if(airports.length>=30){alert('Maximum 30 airports.');return;}airports.push(code);save();render();f.value='';refresh();});
