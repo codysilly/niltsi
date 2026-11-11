@@ -34,3 +34,24 @@ main{padding-top:14px}
 .metar-current{color:var(--green)}
 .metar-stale{color:var(--red)}
 .metar-unavailable{color:var(--amber)}
+
+/* SCAN global search and highlight */
+.scan-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;margin-bottom:14px;background:var(--panel,#141c28);border:1px solid var(--line);font-size:12px}
+.scan-title{font-weight:700;letter-spacing:.12em;color:var(--blue)}
+.scan-toggle{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:transparent;border:0;padding:2px 0;color:var(--muted);text-transform:none}
+#scan-indicator{margin-left:auto;color:var(--blue)}
+.scan-panel{display:flex;align-items:center;gap:10px;flex-wrap:wrap;width:100%;padding-top:8px}
+.scan-panel[hidden]{display:none}
+.scan-toolbar #scan-terms{flex:1 1 220px;min-width:140px;max-width:460px;text-transform:none}
+.scan-toolbar label{display:flex;align-items:center;gap:5px;white-space:nowrap}
+.scan-toolbar input[type=checkbox]{width:auto;accent-color:var(--blue)}
+.scan-navigation{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+#scan-count{min-width:100px;color:var(--muted);font-variant-numeric:tabular-nums}
+.scan-help{flex-basis:100%;color:var(--muted);font-size:11px}
+.scan-legend{display:flex;flex-wrap:wrap;gap:6px;overflow-wrap:anywhere}
+.scan-legend:empty{display:none}
+.scan-chip,mark[data-scan-match]{color:#111827;padding:0 2px;border-radius:2px}
+.scan-chip{padding:2px 6px;font-weight:600}
+mark.scan-current{outline:2px solid white;box-shadow:0 0 0 4px #111827;scroll-margin:80px}
+.scan-toolbar button:disabled{opacity:.45;cursor:default}
+.scan-toolbar :focus-visible{outline:2px solid var(--blue);outline-offset:3px}
