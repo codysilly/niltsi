@@ -2,51 +2,9 @@
   "source": "FAA NASR 28-Day Subscription \u2014 APT_RWY_END.csv",
   "source_url": "https://nfdc.faa.gov/webContent/28DaySub/extra/29_Oct_2026_APT_CSV.zip",
   "effective_date": "2026-10-29",
-  "generated_utc": "2026-11-05T20:06:07.752237+00:00",
+  "generated_utc": "2026-11-12T20:06:28.518576+00:00",
   "heading_reference": "TRUE",
   "airports": {
-    "LAX": [
-      {
-        "id": "06L",
-        "true_heading": 83.0,
-        "pair": "06L/24R"
-      },
-      {
-        "id": "06R",
-        "true_heading": 83.0,
-        "pair": "06R/24L"
-      },
-      {
-        "id": "07L",
-        "true_heading": 83.0,
-        "pair": "07L/25R"
-      },
-      {
-        "id": "07R",
-        "true_heading": 83.0,
-        "pair": "07R/25L"
-      },
-      {
-        "id": "24L",
-        "true_heading": 263.0,
-        "pair": "06R/24L"
-      },
-      {
-        "id": "24R",
-        "true_heading": 263.0,
-        "pair": "06L/24R"
-      },
-      {
-        "id": "25L",
-        "true_heading": 263.0,
-        "pair": "07R/25L"
-      },
-      {
-        "id": "25R",
-        "true_heading": 263.0,
-        "pair": "07L/25R"
-      }
-    ],
     "ORD": [
       {
         "id": "04L",
@@ -171,60 +129,89 @@
         "pair": "13L/31R"
       }
     ],
+    "LAX": [
+      {
+        "id": "06L",
+        "true_heading": 83.0,
+        "pair": "06L/24R"
+      },
+      {
+        "id": "06R",
+        "true_heading": 83.0,
+        "pair": "06R/24L"
+      },
+      {
+        "id": "07L",
+        "true_heading": 83.0,
+        "pair": "07L/25R"
+      },
+      {
+        "id": "07R",
+        "true_heading": 83.0,
+        "pair": "07R/25L"
+      },
+      {
+        "id": "24L",
+        "true_heading": 263.0,
+        "pair": "06R/24L"
+      },
+      {
+        "id": "24R",
+        "true_heading": 263.0,
+        "pair": "06L/24R"
+      },
+      {
+        "id": "25L",
+        "true_heading": 263.0,
+        "pair": "07R/25L"
+      },
+      {
+        "id": "25R",
+        "true_heading": 263.0,
+        "pair": "07L/25R"
+      }
+    ],
     "MEM": [
       {
         "id": "09",
-        "true_heading": 91.3,
+        "true_heading": 92.0,
         "pair": "09/27"
       },
       {
         "id": "18C",
-        "true_heading": 178.3,
+        "true_heading": 179.0,
         "pair": "18C/36C"
       },
       {
         "id": "18L",
-        "true_heading": 178.3,
+        "true_heading": 179.0,
         "pair": "18L/36R"
       },
       {
         "id": "18R",
-        "true_heading": 178.3,
+        "true_heading": 179.0,
         "pair": "18R/36L"
       },
       {
         "id": "27",
-        "true_heading": 271.3,
+        "true_heading": 272.0,
         "pair": "09/27"
       },
       {
         "id": "36C",
-        "true_heading": 358.3,
+        "true_heading": 359.0,
         "pair": "18C/36C"
       },
       {
         "id": "36L",
-        "true_heading": 358.3,
+        "true_heading": 359.0,
         "pair": "18R/36L"
       },
       {
         "id": "36R",
-        "true_heading": 358.3,
+        "true_heading": 359.0,
         "pair": "18L/36R"
       }
     ]
-  },
-  "airport_metadata": {
-    "MEM": {
-      "source": "FAA airport diagram AL-253; chart-derived approximate true bearings",
-      "source_url": "https://aeronav.faa.gov/d-tpp/2611/00253AD.PDF",
-      "effective_date": "2026-10-29",
-      "valid_through": "2026-11-26",
-      "heading_method": "chart-derived-approximate",
-      "derived_date": "2026-11-12",
-      "magnetic_variation_degrees": -1.7,
-      "derivation": "Chart magnetic bearings 093/273 and 180/360 minus estimated 1.7 degrees west variation. Variation projected from 1 degree W at January 2020, changing 0.1 degrees W per year. Fixed approximate bearings; not automatically aged.",
-      "assumption": "Chart magnetic bearings treated as current for this derivation; rounded inputs and heading epoch are not independently verified."
-    }
   }
 }
