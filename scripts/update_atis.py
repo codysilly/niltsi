@@ -15,7 +15,7 @@ def main():
     errors = {}
     for airport in AIRPORTS:
         try:
-            req = urllib.request.Request(URL + airport, headers={'User-Agent': 'Niltsi/0.8 (independent aviation data prototype)', 'Accept': 'application/json'})
+            req = urllib.request.Request(URL + airport, headers={'User-Agent': 'Spatchin/0.8 (independent aviation data prototype)', 'Accept': 'application/json'})
             with urllib.request.urlopen(req, timeout=20) as response:
                 records = json.load(response)
             if isinstance(records, dict):
