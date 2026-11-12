@@ -36,13 +36,26 @@ to `spatchin-airports`. SCAN's `spatchin-scan-v1` key is unchanged.
 The existing loader rules are preserved: accept nonempty arrays, keep uppercase
 three-letter airport codes, remove duplicates in order, and keep at most 30.
 A nonempty array containing only invalid entries still yields an empty list;
-an empty stored array is ignored. If neither key is usable, defaults remain
-ORD, LAX, JFK. Malformed or unreadable values are ignored. Failed writes do not
+an empty stored array is ignored. If neither key is usable, the fallback default is
+MEM only. Valid saved selections take precedence and are not overwritten.
+Malformed or unreadable values are ignored. Failed writes do not
 prevent using the loaded preferences or making changes for the current session.
 
 Migration preserves preferences only within the same browser origin (scheme,
 hostname, and port). It cannot recover settings from another hostname or an
 HTTP origin when using HTTPS, including after moving to www.spatchin.com.
+
+MEM is configured as Memphis International Airport with ICAO KMEM. The METAR
+updater includes KMEM; the runway updater includes MEM with an expected eight
+runway ends. Existing published snapshots are unchanged until successful
+updater runs publish provider data. The dashboard can consume KMEM METAR
+observations once they are present in the published snapshot.
+
+MEM ATIS is not yet enabled, pending provider coverage verification. The ATIS
+updater still requires only KORD, KLAX, and KJFK and retains the entire previous
+snapshot if any required airport has no valid report. Its failure policy is
+unchanged. With no KMEM ATIS in the snapshot, the MEM card retains its existing
+STALE / UNVERIFIED status and "ATIS not available." message.
 
 ## Architecture and future NOTAM integration
 

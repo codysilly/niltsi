@@ -24,6 +24,9 @@ beforeEach(async () => {
   });
   page.on('pageerror',e=>errors.push(e.message));
   await page.goto(url);
+  // Exercise existing aviation fixtures as a saved selection, independent of defaults.
+  await page.evaluate(()=>localStorage.setItem('spatchin-airports',JSON.stringify(['ORD','LAX','JFK'])));
+  await page.reload();
   await page.waitForFunction(()=>document.querySelectorAll('.rw-table tbody tr').length===32 && document.querySelector('.reading').textContent!=='—');
 });
 afterEach(async()=>{await context.close();assert.deepEqual(errors,[]);assert.deepEqual(external,[],'No external requests');});
@@ -33,6 +36,57 @@ async function search(value) {
 }
 async function fixture(html) {await page.evaluate(html=>{const el=document.createElement('section');el.id='fixture';el.innerHTML=html;document.querySelector('main').append(el);},html);}
 async function count(n, selector='#fixture mark') {await page.waitForFunction(([s,n])=>document.querySelectorAll(s).length===n,[selector,n]);}
+
+test('fresh storage uses MEM only without writing preferences or changing SCAN',async()=>{
+  await page.evaluate(()=>{
+    localStorage.removeItem('spatchin-airports');
+    localStorage.removeItem('niltsi-airports');
+    localStorage.setItem('spatchin-scan-v1',JSON.stringify({keywords:'MEM',enabled:true,caseSensitive:false,expanded:false,colors:{MEM:'#ffd166'}}));
+  });
+  const scan=await page.evaluate(()=>localStorage.getItem('spatchin-scan-v1'));
+  await page.reload();
+  assert.deepEqual(await page.locator('.icao').allTextContents(),['MEM']);
+  assert.equal(await page.evaluate(()=>icao('MEM')),'KMEM');
+  assert.equal(await page.locator('.metar-status').textContent(),'METAR UNAVAILABLE');
+  assert.match(await page.locator('#cards').textContent(),/Runway data pending/);
+  assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-airports')),null);
+  assert.equal(await page.evaluate(()=>localStorage.getItem('niltsi-airports')),null);
+  assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-scan-v1')),scan);
+});
+
+test('KMEM observation loads through refresh and renders on the MEM card',async()=>{
+  const observed = Math.floor(Date.now()/1000);
+  const raw = 'KMEM OFFLINE TEST OBSERVATION';
+  let requests = 0;
+  // Test-only response: never written to published data or obtained from a provider.
+  await page.route('**/data/metars.json?*',route=>{
+    requests++;
+    return route.fulfill({json:{updated_utc:new Date().toISOString(),metars:[
+      {icaoId:'KMEM',obsTime:observed,wdir:180,wspd:12,wgst:20,rawOb:raw},
+      {icaoId:'KORD',obsTime:observed,wdir:90,wspd:3,rawOb:'ORD TEST'},
+    ]}});
+  });
+  await page.evaluate(()=>{
+    localStorage.removeItem('spatchin-airports');
+    localStorage.removeItem('niltsi-airports');
+  });
+  await page.reload();
+  const card=page.locator('.airport');
+  await page.waitForFunction(()=>document.querySelector('.reading')?.textContent==='180° / 12G20KT');
+  assert.ok(requests>0,'Startup refresh fetched same-origin METAR JSON');
+  assert.equal(await card.count(),1);
+  assert.equal(await card.locator('.icao').textContent(),'MEM');
+  assert.equal(await card.locator('.name').textContent(),'Memphis International Airport');
+  assert.equal(await card.locator('.metar-status').textContent(),'METAR CURRENT');
+  assert.match(await card.locator('.details').textContent(),/KMEM OFFLINE TEST OBSERVATION/);
+  assert.equal(await card.locator('.details a').first().getAttribute('href'),
+    'https://aviationweather.gov/api/data/metar?ids=KMEM&format=raw');
+  await page.evaluate(()=>refreshAtis());
+  assert.equal(await card.locator('.atis-provider').textContent(),'atis.info · STALE / UNVERIFIED');
+  assert.match(await card.locator('.atis-full').textContent(),/ATIS not available\./);
+  assert.equal(await card.locator('.atis-raw').count(),0);
+  assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-airports')),null);
+});
 
 test('literal matching, case toggle, whitespace, duplicates and overlap priority',async()=>{
   await fixture('<p>Alpha alpha ALPHA a+b aab runway</p>');

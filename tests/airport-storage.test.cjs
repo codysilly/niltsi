@@ -6,7 +6,15 @@ const {join} = require('node:path');
 const vm = require('node:vm');
 const source = readFileSync(join(__dirname, '../app.js'), 'utf8');
 const NEW = 'spatchin-airports', OLD = 'niltsi-airports';
-const defaults = ['ORD', 'LAX', 'JFK'];
+const defaults = ['MEM'];
+test('MEM is the only fallback, maps to KMEM, and does not write preferences', () => {
+  const app = load();
+  assert.deepEqual(app.airports(), ['MEM']);
+  assert.equal(app.run('icao("MEM")'), 'KMEM');
+  assert.equal(app.run('icao(airports[0])'), 'KMEM');
+  assert.deepEqual(app.writes, []);
+  assert.equal(app.stored.size, 0);
+});
 function load(values = {}, {readFailures = [], writeFails = false, unavailable = false} = {}) {
   const stored = new Map(Object.entries(values)), writes = [], reads = [];
   const elements = new Map();

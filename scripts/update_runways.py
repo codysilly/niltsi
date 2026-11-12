@@ -9,7 +9,7 @@ import zipfile
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
-AIRPORTS = {'ORD', 'LAX', 'JFK'}
+AIRPORTS = {'ORD', 'LAX', 'JFK', 'MEM'}
 BASE = date(2026, 10, 1)  # Known FAA NASR effective cycle
 OUT = Path('data/runways.json')
 
@@ -56,7 +56,7 @@ def generate(archive, url, cycle):
         seen[code].add(runway)
         airports[code].append({'id': runway, 'true_heading': degrees % 360, 'pair': (row.get('RWY_ID') or '').strip()})
     # Do not silently publish an incomplete airport inventory.
-    expected = {'ORD':16, 'LAX':8, 'JFK':8}
+    expected = {'ORD':16, 'LAX':8, 'JFK':8, 'MEM':8}
     for code, count in expected.items():
         if len(airports[code]) != count:
             raise ValueError(f'{code}: expected {count} FAA runway ends with headings, found {len(airports[code])}')

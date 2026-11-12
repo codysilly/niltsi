@@ -9,8 +9,8 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-AIRPORTS = {"KORD", "KLAX", "KJFK"}
-URL = "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK&format=json"
+AIRPORTS = {"KORD", "KLAX", "KJFK", "KMEM"}
+URL = "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK,KMEM&format=json"
 DEST = Path("data/metars.json")
 DELAYS = (15, 30, 60)  # seconds before retries 2, 3, and 4
 
