@@ -29,6 +29,7 @@ test('dashboard first-load failure is explicit and synthetic production data is 
 });
 test('valid optional eight-end MEM snapshot renders without wind; invalid MEM is rejected',async()=>{
  const legacy=JSON.parse(readFileSync(join(__dirname,'../data/runways.json'),'utf8'));
+ delete legacy.airports.MEM;delete legacy.airport_metadata;
  for(const mem of [undefined,Array.from({length:8},(_,i)=>({id:['09','27','18L','36R','18C','36C','18R','36L'][i],true_heading:i*40})),Array(8).fill({id:'09',true_heading:90}),[{id:'18L',true_heading:999}]]){
   const runways=JSON.parse(JSON.stringify(legacy));if(mem!==undefined)runways.airports.MEM=mem;
   const app=load({runways});await tick();
@@ -36,4 +37,23 @@ test('valid optional eight-end MEM snapshot renders without wind; invalid MEM is
   assert.equal(app.run('ends("MEM").length'),expected);
   if(expected)assert.equal((app.elements.get('cards').innerHTML.match(/data-reader-open=/g)||[]).length,8);
  }
+});
+
+test('published MEM inventory shows all eight ends without wind and labels chart-derived bearings',async()=>{
+ const runways=JSON.parse(readFileSync(join(__dirname,'../data/runways.json'),'utf8'));
+ const app=load({runways});await tick();
+ assert.deepEqual(Array.from(app.run('ends("MEM")')),['09','18C','18L','18R','27','36C','36L','36R']);
+ assert.equal(app.run('runwayHeading("MEM","09")'),91.3);
+ assert.equal(app.run('runwayHeading("MEM","18L")'),178.3);
+ assert.equal(app.run('runwayHeading("MEM","36R")'),358.3);
+ assert.match(app.elements.get('cards').innerHTML,/Chart-derived approximate true bearings/);
+ assert.match(app.elements.get('cards').innerHTML,/00253AD.PDF/);
+ assert.equal((app.elements.get('cards').innerHTML.match(/data-reader-open=/g)||[]).length,8);
+ assert.equal(app.run('runwayBearingLabel("ORD")'),'FAA NASR true alignment');
+ assert.ok(!app.run('runwaySourceBlock("ORD")').includes('airport diagram'));
+ const pair=runways.airports.MEM.find(e=>e.id==='27');assert.equal(pair.true_heading,271.3);
+ // A later NASR publication replaces the temporary chart metadata naturally.
+ app.run('delete runwayData.airport_metadata;render()');
+ assert.equal(app.run('runwayBearingLabel("MEM")'),'FAA NASR true alignment');
+ assert.ok(!app.elements.get('cards').innerHTML.includes('Chart-derived'));
 });
