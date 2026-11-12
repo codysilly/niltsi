@@ -58,3 +58,33 @@ test('production entry never loads synthetic fixtures',async()=>{
  await context.route('**/*',route=>new URL(route.request().url()).origin===base?route.continue():route.abort());
  try{await page.goto(base);await page.waitForSelector('.notam-reader');assert.equal(await page.evaluate(()=>typeof SPATCHIN_SYNTHETIC_PREVIEW),'undefined');assert.match(await page.locator('.notam-reader').innerText(),/NOTAM data unavailable/);}finally{await context.close();}
 });
+for(const width of [1440,390])test(`offline normalized documentation example renders with SCAN at ${width}px`,async()=>{
+ const {spawnSync}=require('node:child_process');
+ const normalized=spawnSync('python3',['-B','scripts/normalize_notam_snapshot.py','tests/fixtures/nms_reader_documentation.json','--airport','KCLT','--location','KCLT','--retrieved-utc','documentation preview only'],{encoding:'utf8'});
+ assert.equal(normalized.status,0,normalized.stderr);
+ const snapshot=JSON.parse(normalized.stdout);
+ const context=await browser.newContext({viewport:{width,height:1000}}),page=await context.newPage(),external=[];
+ await context.route('**/*',route=>{if(new URL(route.request().url()).origin===base)return route.continue();external.push(route.request().url());return route.abort();});
+ try{
+  await page.goto(base+'/preview/');await page.waitForSelector('.rw-table tbody tr');
+  // Exercise the standalone reader against actual adapter output, with no feed wiring.
+  await page.evaluate(data=>{
+   NotamReader.set(data);const container=document.createElement('div');container.id='adapter-review';
+   container.innerHTML='<table><tbody><tr>'+NotamReader.cell('KCLT','27',['09','27'])+'</tr></tbody></table>'+NotamReader.block('KCLT',['09','27']);
+   document.body.append(container);NotamReader.after();
+  },snapshot);
+  const review=page.locator('#adapter-review');
+  assert.match(await review.innerText(),/Documentation-derived mapping/);
+  await review.locator('#reader-KCLT-all').evaluate(el=>el.open=true);
+  assert.match(await review.innerText(),/27 RWY END ID LGT U\/S/);
+  assert.match(await review.innerText(),/LOCAL_FORMAT/);
+  assert.match(await review.locator('#reader-KCLT-all').innerText(),/!CLT 01\/123 SAMPLE NOTAM/);
+  await review.locator('#reader-KCLT-all').evaluate(el=>el.open=false);
+  await page.locator('#scan-toggle').click();await page.locator('#scan-terms').fill('SAMPLE NOTAM');
+  await page.waitForFunction(()=>document.querySelector('#adapter-review mark'));
+  await page.locator('#scan-next').click();
+  assert.ok(await review.locator('mark').count()>0);
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),true);
+  assert.deepEqual(external,[]);
+ }finally{await context.close();}
+});
