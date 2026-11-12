@@ -21,8 +21,28 @@ existing preferences. Old saved preferences default to collapsed. Match selectio
 survives toggling within the page; it resets on page refresh.
 
 Preferences and assigned colors use the localStorage key `spatchin-scan-v1`,
-independently of `niltsi-airports`. If storage is unavailable or corrupt, SCAN
-continues with session defaults. No external requests or services are involved.
+independently of airport preferences under `spatchin-airports`. If storage is
+unavailable or corrupt, SCAN continues with session defaults. No external requests
+or services are involved.
+
+## Airport preference migration
+
+Airport preferences now load and save under `spatchin-airports`. A valid new-key
+value takes precedence. If it is missing or invalid, the dashboard loads valid
+`niltsi-airports` preferences and copies the normalized list to the new key.
+The legacy key is retained unchanged for rollback; subsequent edits save only
+to `spatchin-airports`. SCAN's `spatchin-scan-v1` key is unchanged.
+
+The existing loader rules are preserved: accept nonempty arrays, keep uppercase
+three-letter airport codes, remove duplicates in order, and keep at most 30.
+A nonempty array containing only invalid entries still yields an empty list;
+an empty stored array is ignored. If neither key is usable, defaults remain
+ORD, LAX, JFK. Malformed or unreadable values are ignored. Failed writes do not
+prevent using the loaded preferences or making changes for the current session.
+
+Migration preserves preferences only within the same browser origin (scheme,
+hostname, and port). It cannot recover settings from another hostname or an
+HTTP origin when using HTTPS, including after moving to www.spatchin.com.
 
 ## Architecture and future NOTAM integration
 
@@ -64,7 +84,9 @@ A custom disclosure using only CSS classes should handle `scan:reveal`.
 Run from the repository root:
 
 ```sh
+node --check app.js
 node --check scan.js
+node --test tests/airport-storage.test.cjs
 node --test tests/scan.test.cjs
 ```
 
