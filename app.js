@@ -6,7 +6,20 @@ let runwayData=null;
 let atisData=null; let atisRetrieved=null;
 const initial=['ORD','LAX','JFK'];let airports=initial.slice();const metars={};let lastFetch=null,loading=false,metarFeedError=false;
 const METAR_STALE_MS=65*60*1000;
-try{const saved=JSON.parse(localStorage.getItem('niltsi-airports'));if(Array.isArray(saved)&&saved.length)airports=[...new Set(saved.filter(x=>typeof x==='string'&&/^[A-Z]{3}$/.test(x)))].slice(0,30);}catch{}
+const AIRPORT_STORAGE_KEY='spatchin-airports';
+function readAirports(key){
+ try{
+  const saved=JSON.parse(localStorage.getItem(key));
+  if(Array.isArray(saved)&&saved.length)return [...new Set(saved.filter(x=>typeof x==='string'&&/^[A-Z]{3}$/.test(x)))].slice(0,30);
+ }catch{}
+ return null;
+}
+const savedAirports=readAirports(AIRPORT_STORAGE_KEY);
+if(savedAirports!==null)airports=savedAirports;
+else{
+ const legacyAirports=readAirports('niltsi-airports');
+ if(legacyAirports!==null){airports=legacyAirports;save();}
+}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function icao(code){return airportInfo[code]?.icao||('K'+code);} // K prefix only a US-airport fallback; not valid worldwide.
 function components(w,h){const a=(w.direction-h)*Math.PI/180,head=w.speed*Math.cos(a),cross=w.speed*Math.sin(a);return {head:Math.round(head),cross:Math.round(Math.abs(cross)),side:cross>0?'R':cross<0?'L':'—'};}
@@ -70,7 +83,7 @@ function render(){document.getElementById('cards').innerHTML=airports.map(code=>
  return `<article class="airport"><div class="airport-head"><div><div class="icao">${esc(code)}</div><div class="name">${esc(a?.name||'Airport not yet configured')}</div></div></div><div class="wind"><div><div class="sub">METAR WIND · ${m?.observed?esc(utc(m.observed)):'—'} · ${metarStatus(m)}</div><div class="reading">${windLabel(w)}</div><div class="sub">${m?.error?esc(m.error):w&&w.direction===null?'Variable direction: components unavailable':metarFeedError?'Feed refresh failed; showing last published observations':''}</div></div></div>${atisBlock(code)}<div class="runways">${r.length?`<table class="rw-table"><thead><tr><th>RWY</th><th>Head/Tail</th><th>Cross</th><th>Status</th></tr></thead><tbody>${r.map(id=>runwayRow(code,id,w)).join('')}</tbody></table>`:'<div class="empty">Runway data pending.</div>'}</div><button class="expand" type="button" data-expand="${code}" aria-expanded="false">Show details ▾</button><div class="details" id="detail-${code}" hidden><p><strong>METAR:</strong> ${esc(m?.raw||'No observation available.')}</p><p><strong>Observation:</strong> ${esc(utc(m?.observed))} · <strong>Last successful retrieval:</strong> ${esc(utc(lastFetch))} · <strong>Freshness:</strong> ${esc(metarState(m).toUpperCase())} (65-minute observation threshold)</p><p><a href="${link}" target="_blank" rel="noopener">Original METAR (Aviation Weather Center)</a></p><p><strong>Wind components:</strong> ${runwayData?.airports?.[code]?'FAA NASR true alignments':'Approximate runway designation headings (FAA data not loaded)'}; sustained and gust components where available.</p><p><strong>Runways:</strong> ${runwayData?.airports?.[code]?`FAA NASR effective ${esc(runwayData.effective_date)} · <a href="${esc(runwayData.source_url)}" target="_blank" rel="noopener">Source archive</a>`:'FAA NASR data not yet published; provisional runway list.'}</p><p><strong>NOTAM / closure status:</strong> Not connected; dashes do not mean open.</p><button type="button" data-remove="${code}">Remove airport</button></div></article>`;}).join('');
  document.querySelectorAll('[data-expand]').forEach(b=>b.addEventListener('click',()=>{const el=document.getElementById('detail-'+b.dataset.expand);el.hidden=!el.hidden;b.setAttribute('aria-expanded',String(!el.hidden));b.textContent=el.hidden?'Show details ▾':'Hide details ▴';}));
  document.querySelectorAll('[data-remove]').forEach(b=>b.addEventListener('click',()=>{airports=airports.filter(x=>x!==b.dataset.remove);save();render();}));}
-function save(){try{localStorage.setItem('niltsi-airports',JSON.stringify(airports));}catch{}}
+function save(){try{localStorage.setItem(AIRPORT_STORAGE_KEY,JSON.stringify(airports));}catch{}}
 function parseMetar(m){const speed=m.wspd===null||m.wspd===undefined?NaN:Number(m.wspd),direction=m.wdir===null||m.wdir===undefined||m.wdir==='VRB'?null:Number(m.wdir),gust=m.wgst===null||m.wgst===undefined?null:Number(m.wgst);return {wind:Number.isFinite(speed)?{speed,direction:Number.isFinite(direction)?direction:null,gust:Number.isFinite(gust)?gust:null}:null,observed:typeof m.obsTime==='number'?new Date(m.obsTime*1000).toISOString():(m.obsTime||m.reportTime||null),raw:m.rawOb||'',error:null};}
 async function refresh(){
  if(loading)return;
