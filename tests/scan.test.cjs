@@ -38,6 +38,10 @@ async function fixture(html) {await page.evaluate(html=>{const el=document.creat
 async function count(n, selector='#fixture mark') {await page.waitForFunction(([s,n])=>document.querySelectorAll(s).length===n,[selector,n]);}
 
 test('fresh storage uses MEM only without writing preferences or changing SCAN',async()=>{
+  // Explicit offline fixture: this case has no MEM observation, regardless of published data.
+  await page.route('**/data/metars.json?*',route=>route.fulfill({
+    json:{updated_utc:new Date().toISOString(),metars:[]},
+  }));
   await page.evaluate(()=>{
     localStorage.removeItem('spatchin-airports');
     localStorage.removeItem('niltsi-airports');
@@ -45,6 +49,7 @@ test('fresh storage uses MEM only without writing preferences or changing SCAN',
   });
   const scan=await page.evaluate(()=>localStorage.getItem('spatchin-scan-v1'));
   await page.reload();
+  await page.waitForFunction(()=>!loading && metars.MEM?.error==='No valid METAR returned');
   assert.deepEqual(await page.locator('.icao').allTextContents(),['MEM']);
   assert.equal(await page.evaluate(()=>icao('MEM')),'KMEM');
   assert.equal(await page.locator('.metar-status').textContent(),'METAR UNAVAILABLE');
