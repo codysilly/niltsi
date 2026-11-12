@@ -53,7 +53,8 @@ test('fresh storage uses MEM only without writing preferences or changing SCAN',
   assert.deepEqual(await page.locator('.icao').allTextContents(),['MEM']);
   assert.equal(await page.evaluate(()=>icao('MEM')),'KMEM');
   assert.equal(await page.locator('.metar-status').textContent(),'METAR UNAVAILABLE');
-  assert.match(await page.locator('#cards').textContent(),/Runway data pending/);
+  await page.waitForFunction(()=>document.querySelectorAll('.rw-table tbody tr').length===8);
+  assert.match(await page.locator('#cards').textContent(),/Chart-derived approximate true bearings/);
   assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-airports')),null);
   assert.equal(await page.evaluate(()=>localStorage.getItem('niltsi-airports')),null);
   assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-scan-v1')),scan);
@@ -136,7 +137,7 @@ test('safe DOM highlighting preserves links, listeners, inputs and editable cont
   await search('');await count(0);assert.match(await page.locator('#fixture p').textContent(),/^<img/);
 });
 test('airport, METAR, ATIS and runway behavior survives highlights and data refresh',async()=>{
-  await page.waitForFunction(()=>document.querySelectorAll('.atis-raw').length>0 && document.querySelector('.rw-table td[title]').title.startsWith('FAA true alignment'));
+  await page.waitForFunction(()=>document.querySelectorAll('.atis-raw').length>0 && document.querySelector('.rw-table td[title]').title.startsWith('FAA NASR true alignment'));
   const dashboard = () => page.locator('#cards').evaluate(el=>({
     text:el.textContent,
     runways:[...el.querySelectorAll('.rw-table tbody tr')].map(row=>[...row.cells].map(cell=>({text:cell.textContent,title:cell.title})))

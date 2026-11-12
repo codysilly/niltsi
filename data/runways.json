@@ -170,6 +170,61 @@
         "true_heading": 301.0,
         "pair": "13L/31R"
       }
+    ],
+    "MEM": [
+      {
+        "id": "09",
+        "true_heading": 91.3,
+        "pair": "09/27"
+      },
+      {
+        "id": "18C",
+        "true_heading": 178.3,
+        "pair": "18C/36C"
+      },
+      {
+        "id": "18L",
+        "true_heading": 178.3,
+        "pair": "18L/36R"
+      },
+      {
+        "id": "18R",
+        "true_heading": 178.3,
+        "pair": "18R/36L"
+      },
+      {
+        "id": "27",
+        "true_heading": 271.3,
+        "pair": "09/27"
+      },
+      {
+        "id": "36C",
+        "true_heading": 358.3,
+        "pair": "18C/36C"
+      },
+      {
+        "id": "36L",
+        "true_heading": 358.3,
+        "pair": "18R/36L"
+      },
+      {
+        "id": "36R",
+        "true_heading": 358.3,
+        "pair": "18L/36R"
+      }
     ]
+  },
+  "airport_metadata": {
+    "MEM": {
+      "source": "FAA airport diagram AL-253; chart-derived approximate true bearings",
+      "source_url": "https://aeronav.faa.gov/d-tpp/2611/00253AD.PDF",
+      "effective_date": "2026-10-29",
+      "valid_through": "2026-11-26",
+      "heading_method": "chart-derived-approximate",
+      "derived_date": "2026-11-12",
+      "magnetic_variation_degrees": -1.7,
+      "derivation": "Chart magnetic bearings 093/273 and 180/360 minus estimated 1.7 degrees west variation. Variation projected from 1 degree W at January 2020, changing 0.1 degrees W per year. Fixed approximate bearings; not automatically aged.",
+      "assumption": "Chart magnetic bearings treated as current for this derivation; rounded inputs and heading epoch are not independently verified."
+    }
   }
 }
