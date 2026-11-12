@@ -6,7 +6,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: niltsi-atis-update
+  group: spatchin-atis-update
   cancel-in-progress: false
 jobs:
   update-atis:

@@ -6,7 +6,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: niltsi-runway-update
+  group: spatchin-runway-update
   cancel-in-progress: false
 jobs:
   update-runways:

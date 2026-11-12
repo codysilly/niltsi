@@ -6,7 +6,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: niltsi-metar-update
+  group: spatchin-metar-update
   cancel-in-progress: false
 jobs:
   update-metar:
