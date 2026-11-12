@@ -1,10 +1,10 @@
 'use strict';
 // Spatchin v0.9. METARs loaded from GitHub Pages same-origin JSON. Not for operational dispatch use.
 const runwayPairs={ORD:['04L/22R','04R/22L','09L/27R','09R/27L','09C/27C','10L/28R','10C/28C','10R/28L'],LAX:['06L/24R','06R/24L','07L/25R','07R/25L'],JFK:['04L/22R','04R/22L','13L/31R','13R/31L']};
-const airportInfo={ORD:{name:'Chicago O’Hare',icao:'KORD'},LAX:{name:'Los Angeles International',icao:'KLAX'},JFK:{name:'John F. Kennedy International',icao:'KJFK'}};
+const airportInfo={ORD:{name:'Chicago O’Hare',icao:'KORD'},LAX:{name:'Los Angeles International',icao:'KLAX'},JFK:{name:'John F. Kennedy International',icao:'KJFK'},MEM:{name:'Memphis International Airport',icao:'KMEM'}};
 let runwayData=null;
 let atisData=null; let atisRetrieved=null;
-const initial=['ORD','LAX','JFK'];let airports=initial.slice();const metars={};let lastFetch=null,loading=false,metarFeedError=false;
+const initial=['MEM'];let airports=initial.slice();const metars={};let lastFetch=null,loading=false,metarFeedError=false;
 const METAR_STALE_MS=65*60*1000;
 const AIRPORT_STORAGE_KEY='spatchin-airports';
 function readAirports(key){
