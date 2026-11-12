@@ -1,0 +1,35 @@
+{
+  "provenance": "DOCUMENTATION-DERIVED example subset from NMS OpenAPI 1.0.18 (2026-02-12); NOT a real response capture",
+  "status": "Success",
+  "data": {
+    "geojson": [
+      {
+        "type": "Feature",
+        "properties": {
+          "coreNOTAMData": {
+            "notam": {
+              "id": "NMS_ID_1234567812345678",
+              "number": "01/123",
+              "text": "27 RWY END ID LGT U/S",
+              "scope": "A",
+              "type": "N",
+              "location": "CLT",
+              "icaoLocation": "KCLT",
+              "issued": "2025-03-17T17:08:00.000Z",
+              "effectiveStart": "2025-03-17T17:02:00.000Z",
+              "effectiveEnd": "2025-09-18T21:11:00.000Z",
+              "lastUpdated": "2025-03-17T17:08:00.000Z",
+              "cancelationDate": "2025-09-18T21:11:00.000Z"
+            },
+            "notamTranslation": [
+              {
+                "type": "LOCAL_FORMAT",
+                "simpleText": "!CLT 01/123 SAMPLE NOTAM"
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

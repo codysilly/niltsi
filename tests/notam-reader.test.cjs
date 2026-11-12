@@ -22,3 +22,23 @@ test('source strings are escaped; unavailable and retained-error states are expl
  const html=reader.block('KMEM',['18L']);assert.ok(!html.includes('<img'));assert.match(html,/&lt;img/);assert.match(html,/retained snapshot/);
  reader.set(null);assert.match(reader.block('KMEM',[]),/NOTAM data unavailable/);
 });
+
+// Documentation-derived grammar; not a captured live NOTAM.
+test('prefix runway-end references require a complete designation and exact RWY END context',()=>{
+ const text='🙂 27 RWY END ID LGT U/S; RWY 09';
+ const refs=reader.references(text,['09','27']);
+ assert.deepEqual(refs.map(r=>r.id),['27','09']);
+ for(const r of refs)assert.equal(text.slice(r.start,r.end),r.raw);
+ for(const text of ['127 RWY END','027 RWY END','27X RWY END','27 lights near RWY','27 RWY ENDING','9 aircraft RWY END'])assert.deepEqual(reader.references(text,['09','27']),[]);
+ assert.deepEqual(reader.references('27 RWY END',['09']),[]);
+});
+test('formatted representations are escaped, indexed distinctly and never replace missing condition text',()=>{
+ reader.set({airports:{KCLT:{notices:[{text:null,formatted_texts:[{type:'LOCAL_FORMAT',field:'simpleText',text:'RWY 27 <script>'}],warnings:['Condition text missing']}]}}});
+ const n=reader.records('KCLT',['09','27'])[0];
+ assert.equal(n.references[0].representation,'formatted_texts[0].text');
+ assert.equal(n.formatted_texts[0].text.slice(n.references[0].start,n.references[0].end),'27');
+ const html=reader.block('KCLT',['09','27']);
+ assert.match(html,/Original text unavailable/);assert.match(html,/LOCAL_FORMAT/);assert.match(html,/Condition text missing/);
+ assert.ok(!html.includes('<script>'));assert.match(html,/&lt;script&gt;/);
+ assert.match(reader.cell('KCLT','27',['09','27']),/Read NOTAMs \(1\)/);
+});

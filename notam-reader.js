@@ -14,11 +14,17 @@ const NotamReader = (() => {
     if(known.has(id))found.push({id,start:start+token.index,end:start+token.index+raw.length,raw});
    }
   }
-  return found;
+  // Narrow prefix grammar from the OpenAPI example: "27 RWY END ...".
+  // Do not recognize bare numbers, arbitrary text before RWY, or reciprocal ends.
+  for(const match of String(text??'').matchAll(/\b((?:3[0-6]|[12][0-9]|0?[1-9])[LRC]?)\s+RWY\s+END\b/gi)){
+   const raw=match[1], id=raw.toUpperCase().padStart(/[LRC]$/i.test(raw)?3:2,'0');
+   if(known.has(id))found.push({id,start:match.index,end:match.index+raw.length,raw});
+  }
+  return found.sort((a,b)=>a.start-b.start);
  }
- function records(code,inventory){return (snapshot?.airports?.[code]?.notices||[]).map((n,i)=>({...n,key:`${code}-${i}`,references:references(n.text,inventory)}));}
+ function records(code,inventory){return (snapshot?.airports?.[code]?.notices||[]).map((n,i)=>({...n,key:`${code}-${i}`,references:[...references(n.text,inventory),...(Array.isArray(n.formatted_texts)?n.formatted_texts:[]).flatMap((t,i)=>typeof t?.text==='string'?references(t.text,inventory).map(r=>({...r,representation:`formatted_texts[${i}].text` })):[])]}));}
  function cell(code,id,inventory){const n=records(code,inventory).filter(n=>n.references.some(r=>r.id===id)).length;return `<td class="unknown"><button type="button" data-reader-open="${esc(code)}-${esc(id)}" aria-label="Read NOTAMs (${n}) for runway ${esc(id)} at ${esc(code)}" aria-expanded="false" aria-controls="reader-${esc(code)}-${esc(id)}">Read NOTAMs (${n})</button><small class="reader-note">Availability not assessed</small></td>`;}
- function notice(n){return `<article class="reader-notice" data-reader-key="${esc(n.key)}"><h4>${esc(n.number||n.id||'Source ID not supplied')}</h4><p class="reader-raw">${esc(n.text||'Original text unavailable')}</p><dl><dt>Source</dt><dd>${esc(n.source)}</dd><dt>Reported effective start</dt><dd>${esc(n.effectiveStart)}</dd><dt>Reported effective end</dt><dd>${esc(n.effectiveEnd)}</dd><dt>Retrieved</dt><dd>${esc(n.retrieved_utc||snapshot?.retrieved_utc)}</dd><dt>Source-reported relationships / type</dt><dd>${esc(n.reported_relationships?JSON.stringify(n.reported_relationships):'Not supplied')}</dd></dl><p>Text references: ${esc(n.references.map(r=>`${r.id} [${r.start}, ${r.end})`).join(', ')||'None indexed')} (zero-based UTF-16 offsets into original text)</p><details><summary>Preserved source metadata</summary><pre>${esc(JSON.stringify(n,null,2))}</pre></details></article>`;}
+ function notice(n){return `<article class="reader-notice" data-reader-key="${esc(n.key)}"><h4>${esc(n.number||n.id||'Source ID not supplied')}</h4><p class="reader-raw">${esc(n.text||'Original text unavailable')}</p>${(Array.isArray(n.formatted_texts)?n.formatted_texts:[]).map(t=>`<p>Provider representation: ${esc(t.type)} / ${esc(t.field)}</p><p class="reader-raw">${esc(t.text)}</p>`).join('')}${n.warnings?.length?`<p>${esc(n.warnings.join('; '))}</p>`:''}<dl><dt>Source</dt><dd>${esc(n.source)}</dd><dt>Reported effective start</dt><dd>${esc(n.effectiveStart)}</dd><dt>Reported effective end</dt><dd>${esc(n.effectiveEnd)}</dd><dt>Retrieved</dt><dd>${esc(n.retrieved_utc||snapshot?.retrieved_utc)}</dd><dt>Source-reported relationships / type</dt><dd>${esc(n.reported_relationships?JSON.stringify(n.reported_relationships):'Not supplied')}</dd></dl><p>Text references: ${esc(n.references.map(r=>`${r.id} [${r.start}, ${r.end}) in ${r.representation||'text'}`).join(', ')||'None indexed')} (zero-based UTF-16 offsets into the named source representation)</p><details><summary>Preserved source metadata</summary><pre>${esc(JSON.stringify(n,null,2))}</pre></details></article>`;}
  function block(code,inventory){
   const list=records(code,inventory),entry=snapshot?.airports?.[code];
   const group=(key,title,items)=>`<details id="reader-${code}-${key}" data-reader-detail><summary>${esc(title)} (${items.length})</summary>${items.map(notice).join('')||'<p>No notices in this snapshot group. Coverage unknown.</p>'}</details>`;
