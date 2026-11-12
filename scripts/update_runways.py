@@ -20,7 +20,7 @@ def cycle_dates(today):
 
 def fetch_archive(cycle):
     url = f'https://nfdc.faa.gov/webContent/28DaySub/extra/{cycle:%d_%b_%Y}_APT_CSV.zip'
-    request = urllib.request.Request(url, headers={'User-Agent':'Niltsi/0.7 runway-reference updater', 'Accept':'application/zip'})
+    request = urllib.request.Request(url, headers={'User-Agent':'Spatchin/0.7 runway-reference updater', 'Accept':'application/zip'})
     with urllib.request.urlopen(request, timeout=90) as response:
         raw = response.read()
     return zipfile.ZipFile(io.BytesIO(raw)), url

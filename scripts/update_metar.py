@@ -41,7 +41,7 @@ def valid(item):
 
 def fetch():
     req = urllib.request.Request(URL, headers={
-        "User-Agent": "NiltsiDashboard/0.9 (GitHub Actions)",
+        "User-Agent": "SpatchinDashboard/0.9 (GitHub Actions)",
         "Accept": "application/json",
     })
     with urllib.request.urlopen(req, timeout=35) as response:
