@@ -137,7 +137,7 @@ test('safe DOM highlighting preserves links, listeners, inputs and editable cont
   await search('');await count(0);assert.match(await page.locator('#fixture p').textContent(),/^<img/);
 });
 test('airport, METAR, ATIS and runway behavior survives highlights and data refresh',async()=>{
-  await page.waitForFunction(()=>document.querySelectorAll('.atis-raw').length>0 && document.querySelector('.rw-table td[title]').title.startsWith('FAA true alignment'));
+  await page.waitForFunction(()=>document.querySelectorAll('.atis-raw').length>0 && document.querySelector('.rw-table td[title]').title.startsWith('FAA NASR true alignment'));
   const dashboard = () => page.locator('#cards').evaluate(el=>({
     text:el.textContent,
     runways:[...el.querySelectorAll('.rw-table tbody tr')].map(row=>[...row.cells].map(cell=>({text:cell.textContent,title:cell.title})))
