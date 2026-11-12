@@ -1,0 +1,577 @@
+{
+  "review_input_version": 1,
+  "data_kind": "synthetic",
+  "fixture_notice": "SYNTHETIC ONLY - NOT REAL OR VERIFIED FAA NOTICES",
+  "airports": {
+    "KORD": {
+      "response": {
+        "status": "SYNTHETIC_NO_SUCCESS_SEMANTICS",
+        "data": {
+          "geojson": [
+            {
+              "type": "Feature",
+              "geometry": null,
+              "properties": {
+                "coreNOTAMData": {
+                  "notam": {
+                    "id": "SYNTHETIC-REVIEW-FULL",
+                    "number": "SYNTHETIC-FULL",
+                    "text": "RWY 4L/22R CLSD",
+                    "effectiveStart": "2026-11-11T00:00:00Z",
+                    "effectiveEnd": "2026-11-12T00:00:00Z",
+                    "issued": "2026-11-10T20:00:00Z",
+                    "lastUpdated": "2026-11-10T21:00:00Z",
+                    "type": "SYNTHETIC_UNVERIFIED_TYPE",
+                    "unrecognizedSourceField": {
+                      "retained": true
+                    }
+                  },
+                  "notamEvent": {
+                    "scenario": "SYNTHETIC_UNVERIFIED_SCENARIO"
+                  },
+                  "notamTranslation": [
+                    {
+                      "formattedText": "<p>Synthetic translation only; do not parse as original notice.</p>"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "Feature",
+              "geometry": null,
+              "properties": {
+                "coreNOTAMData": {
+                  "notam": {
+                    "id": "SYNTHETIC-REVIEW-SINGLE",
+                    "number": "SYNTHETIC-SINGLE",
+                    "text": "RWY 9L CLSD",
+                    "effectiveStart": "2026-11-11T00:00:00Z",
+                    "effectiveEnd": "2026-11-12T00:00:00Z",
+                    "issued": "2026-11-10T20:00:00Z",
+                    "lastUpdated": "2026-11-10T21:00:00Z",
+                    "type": "SYNTHETIC_UNVERIFIED_TYPE",
+                    "unrecognizedSourceField": {
+                      "retained": true
+                    }
+                  },
+                  "notamEvent": {
+                    "scenario": "SYNTHETIC_UNVERIFIED_SCENARIO"
+                  },
+                  "notamTranslation": [
+                    {
+                      "formattedText": "<p>Synthetic translation only; do not parse as original notice.</p>"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "Feature",
+              "geometry": null,
+              "properties": {
+                "coreNOTAMData": {
+                  "notam": {
+                    "id": "SYNTHETIC-REVIEW-DIRECTIONAL",
+                    "number": "SYNTHETIC-DIRECTIONAL",
+                    "text": "RWY 4R CLSD TO LDG",
+                    "effectiveStart": "2026-11-11T00:00:00Z",
+                    "effectiveEnd": "2026-11-12T00:00:00Z",
+                    "issued": "2026-11-10T20:00:00Z",
+                    "lastUpdated": "2026-11-10T21:00:00Z",
+                    "type": "SYNTHETIC_UNVERIFIED_TYPE",
+                    "unrecognizedSourceField": {
+                      "retained": true
+                    }
+                  },
+                  "notamEvent": {
+                    "scenario": "SYNTHETIC_UNVERIFIED_SCENARIO"
+                  },
+                  "notamTranslation": [
+                    {
+                      "formattedText": "<p>Synthetic translation only; do not parse as original notice.</p>"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "Feature",
+              "geometry": null,
+              "properties": {
+                "coreNOTAMData": {
+                  "notam": {
+                    "id": "SYNTHETIC-REVIEW-PARTIAL",
+                    "number": "SYNTHETIC-PARTIAL",
+                    "text": "RWY 4L/22R CLSD BTN TWY A AND TWY B",
+                    "effectiveStart": "2026-11-11T00:00:00Z",
+                    "effectiveEnd": "2026-11-12T00:00:00Z",
+                    "issued": "2026-11-10T20:00:00Z",
+                    "lastUpdated": "2026-11-10T21:00:00Z",
+                    "type": "SYNTHETIC_UNVERIFIED_TYPE",
+                    "unrecognizedSourceField": {
+                      "retained": true
+                    }
+                  },
+                  "notamEvent": {
+                    "scenario": "SYNTHETIC_UNVERIFIED_SCENARIO"
+                  },
+                  "notamTranslation": [
+                    {
+                      "formattedText": "<p>Synthetic translation only; do not parse as original notice.</p>"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "Feature",
+              "geometry": null,
+              "properties": {
+                "coreNOTAMData": {
+                  "notam": {
+                    "id": "SYNTHETIC-REVIEW-CONDITIONAL",
+                    "number": "SYNTHETIC-CONDITIONAL",
+                    "text": "RWY 4L CLSD EXC PPR",
+                    "effectiveStart": "2026-11-11T00:00:00Z",
+                    "effectiveEnd": "2026-11-12T00:00:00Z",
+                    "issued": "2026-11-10T20:00:00Z",
+                    "lastUpdated": "2026-11-10T21:00:00Z",
+                    "type": "SYNTHETIC_UNVERIFIED_TYPE",
+                    "unrecognizedSourceField": {
+                      "retained": true
+                    }
+                  },
+                  "notamEvent": {
+                    "scenario": "SYNTHETIC_UNVERIFIED_SCENARIO"
+                  },
+                  "notamTranslation": [
+                    {
+                      "formattedText": "<p>Synthetic translation only; do not parse as original notice.</p>"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "Feature",
+              "geometry": null,
+              "properties": {
+                "coreNOTAMData": {
+                  "notam": {
+                    "id": "SYNTHETIC-REVIEW-EQUIPMENT",
+                    "number": "SYNTHETIC-EQUIPMENT",
+                    "text": "RWY 4L PAPI OTS",
+                    "effectiveStart": "2026-11-11T00:00:00Z",
+                    "effectiveEnd": "2026-11-12T00:00:00Z",
+                    "issued": "2026-11-10T20:00:00Z",
+                    "lastUpdated": "2026-11-10T21:00:00Z",
+                    "type": "SYNTHETIC_UNVERIFIED_TYPE",
+                    "unrecognizedSourceField": {
+                      "retained": true
+                    }
+                  },
+                  "notamEvent": {
+                    "scenario": "SYNTHETIC_UNVERIFIED_SCENARIO"
+                  },
+                  "notamTranslation": [
+                    {
+                      "formattedText": "<p>Synthetic translation only; do not parse as original notice.</p>"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "Feature",
+              "geometry": null,
+              "properties": {
+                "coreNOTAMData": {
+                  "notam": {
+                    "id": "SYNTHETIC-REVIEW-LIGHTING",
+                    "number": "SYNTHETIC-LIGHTING",
+                    "text": "RWY 4L HIRL CLSD",
+                    "effectiveStart": "2026-11-11T00:00:00Z",
+                    "effectiveEnd": "2026-11-12T00:00:00Z",
+                    "issued": "2026-11-10T20:00:00Z",
+                    "lastUpdated": "2026-11-10T21:00:00Z",
+                    "type": "SYNTHETIC_UNVERIFIED_TYPE",
+                    "unrecognizedSourceField": {
+                      "retained": true
+                    }
+                  },
+                  "notamEvent": {
+                    "scenario": "SYNTHETIC_UNVERIFIED_SCENARIO"
+                  },
+                  "notamTranslation": [
+                    {
+                      "formattedText": "<p>Synthetic translation only; do not parse as original notice.</p>"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "Feature",
+              "geometry": null,
+              "properties": {
+                "coreNOTAMData": {
+                  "notam": {
+                    "id": "SYNTHETIC-REVIEW-TAXIWAY",
+                    "number": "SYNTHETIC-TAXIWAY",
+                    "text": "TWY A CLSD BTN RWY 4L AND TWY B",
+                    "effectiveStart": "2026-11-11T00:00:00Z",
+                    "effectiveEnd": "2026-11-12T00:00:00Z",
+                    "issued": "2026-11-10T20:00:00Z",
+                    "lastUpdated": "2026-11-10T21:00:00Z",
+                    "type": "SYNTHETIC_UNVERIFIED_TYPE",
+                    "unrecognizedSourceField": {
+                      "retained": true
+                    }
+                  },
+                  "notamEvent": {
+                    "scenario": "SYNTHETIC_UNVERIFIED_SCENARIO"
+                  },
+                  "notamTranslation": [
+                    {
+                      "formattedText": "<p>Synthetic translation only; do not parse as original notice.</p>"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "Feature",
+              "geometry": null,
+              "properties": {
+                "coreNOTAMData": {
+                  "notam": {
+                    "id": "SYNTHETIC-REVIEW-FUTURE",
+                    "number": "SYNTHETIC-FUTURE",
+                    "text": "RWY 9R/27L CLSD",
+                    "effectiveStart": "2026-11-12T00:00:00Z",
+                    "effectiveEnd": "2026-11-13T00:00:00Z",
+                    "issued": "2026-11-10T20:00:00Z",
+                    "lastUpdated": "2026-11-10T21:00:00Z",
+                    "type": "SYNTHETIC_UNVERIFIED_TYPE",
+                    "unrecognizedSourceField": {
+                      "retained": true
+                    }
+                  },
+                  "notamEvent": {
+                    "scenario": "SYNTHETIC_UNVERIFIED_SCENARIO"
+                  },
+                  "notamTranslation": [
+                    {
+                      "formattedText": "<p>Synthetic translation only; do not parse as original notice.</p>"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "Feature",
+              "geometry": null,
+              "properties": {
+                "coreNOTAMData": {
+                  "notam": {
+                    "id": "SYNTHETIC-REVIEW-EXPIRED",
+                    "number": "SYNTHETIC-EXPIRED",
+                    "text": "RWY 9R/27L CLSD",
+                    "effectiveStart": "2026-11-09T00:00:00Z",
+                    "effectiveEnd": "2026-11-10T00:00:00Z",
+                    "issued": "2026-11-10T20:00:00Z",
+                    "lastUpdated": "2026-11-10T21:00:00Z",
+                    "type": "SYNTHETIC_UNVERIFIED_TYPE",
+                    "unrecognizedSourceField": {
+                      "retained": true
+                    }
+                  },
+                  "notamEvent": {
+                    "scenario": "SYNTHETIC_UNVERIFIED_SCENARIO"
+                  },
+                  "notamTranslation": [
+                    {
+                      "formattedText": "<p>Synthetic translation only; do not parse as original notice.</p>"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "Feature",
+              "geometry": null,
+              "properties": {
+                "coreNOTAMData": {
+                  "notam": {
+                    "id": "SYNTHETIC-REVIEW-SCHEDULE",
+                    "number": "SYNTHETIC-SCHEDULE",
+                    "text": "RWY 4L CLSD",
+                    "effectiveStart": "2026-11-11T00:00:00Z",
+                    "effectiveEnd": "2026-11-12T00:00:00Z",
+                    "issued": "2026-11-10T20:00:00Z",
+                    "lastUpdated": "2026-11-10T21:00:00Z",
+                    "type": "SYNTHETIC_UNVERIFIED_TYPE",
+                    "unrecognizedSourceField": {
+                      "retained": true
+                    },
+                    "schedule": "DLY 0100-0300"
+                  },
+                  "notamEvent": {
+                    "scenario": "SYNTHETIC_UNVERIFIED_SCENARIO"
+                  },
+                  "notamTranslation": [
+                    {
+                      "formattedText": "<p>Synthetic translation only; do not parse as original notice.</p>"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "Feature",
+              "geometry": null,
+              "properties": {
+                "coreNOTAMData": {
+                  "notam": {
+                    "id": "SYNTHETIC-REVIEW-CANCELLATION",
+                    "number": "SYNTHETIC-CANCELLATION",
+                    "text": "RWY 4L CLSD",
+                    "effectiveStart": "2026-11-11T00:00:00Z",
+                    "effectiveEnd": "2026-11-12T00:00:00Z",
+                    "issued": "2026-11-10T20:00:00Z",
+                    "lastUpdated": "2026-11-10T21:00:00Z",
+                    "type": "NOTAMC",
+                    "unrecognizedSourceField": {
+                      "retained": true
+                    },
+                    "cancelledNotamId": "SYNTHETIC-REFERENCE-ONLY"
+                  },
+                  "notamEvent": {
+                    "scenario": "SYNTHETIC_UNVERIFIED_SCENARIO"
+                  },
+                  "notamTranslation": [
+                    {
+                      "formattedText": "<p>Synthetic translation only; do not parse as original notice.</p>"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "Feature",
+              "geometry": null,
+              "properties": {
+                "coreNOTAMData": {
+                  "notam": {
+                    "id": "SYNTHETIC-REVIEW-REPLACEMENT",
+                    "number": "SYNTHETIC-REPLACEMENT",
+                    "text": "RWY 4L CLSD",
+                    "effectiveStart": "2026-11-11T00:00:00Z",
+                    "effectiveEnd": "2026-11-12T00:00:00Z",
+                    "issued": "2026-11-10T20:00:00Z",
+                    "lastUpdated": "2026-11-10T21:00:00Z",
+                    "type": "NOTAMR",
+                    "unrecognizedSourceField": {
+                      "retained": true
+                    },
+                    "replaces": "SYNTHETIC-REFERENCE-ONLY"
+                  },
+                  "notamEvent": {
+                    "scenario": "SYNTHETIC_UNVERIFIED_SCENARIO"
+                  },
+                  "notamTranslation": [
+                    {
+                      "formattedText": "<p>Synthetic translation only; do not parse as original notice.</p>"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "Feature",
+              "geometry": null,
+              "properties": {
+                "coreNOTAMData": {
+                  "notam": {
+                    "id": "SYNTHETIC-REVIEW-AMBIGUOUS",
+                    "number": "SYNTHETIC-AMBIGUOUS",
+                    "text": "APCH END OF RWY 4L CLSD",
+                    "effectiveStart": "2026-11-11T00:00:00Z",
+                    "effectiveEnd": "2026-11-12T00:00:00Z",
+                    "issued": "2026-11-10T20:00:00Z",
+                    "lastUpdated": "2026-11-10T21:00:00Z",
+                    "type": "SYNTHETIC_UNVERIFIED_TYPE",
+                    "unrecognizedSourceField": {
+                      "retained": true
+                    }
+                  },
+                  "notamEvent": {
+                    "scenario": "SYNTHETIC_UNVERIFIED_SCENARIO"
+                  },
+                  "notamTranslation": [
+                    {
+                      "formattedText": "<p>Synthetic translation only; do not parse as original notice.</p>"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "Feature",
+              "geometry": null,
+              "properties": {
+                "coreNOTAMData": {
+                  "notam": {
+                    "id": "SYNTHETIC-REVIEW-PAIR-MISMATCH",
+                    "number": "SYNTHETIC-PAIR-MISMATCH",
+                    "text": "RWY 4L/22L CLSD",
+                    "effectiveStart": "2026-11-11T00:00:00Z",
+                    "effectiveEnd": "2026-11-12T00:00:00Z",
+                    "issued": "2026-11-10T20:00:00Z",
+                    "lastUpdated": "2026-11-10T21:00:00Z",
+                    "type": "SYNTHETIC_UNVERIFIED_TYPE",
+                    "unrecognizedSourceField": {
+                      "retained": true
+                    }
+                  },
+                  "notamEvent": {
+                    "scenario": "SYNTHETIC_UNVERIFIED_SCENARIO"
+                  },
+                  "notamTranslation": [
+                    {
+                      "formattedText": "<p>Synthetic translation only; do not parse as original notice.</p>"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "Feature",
+              "geometry": null,
+              "properties": {
+                "coreNOTAMData": {
+                  "notam": {
+                    "id": "SYNTHETIC-REVIEW-INJECTION",
+                    "number": "SYNTHETIC-INJECTION",
+                    "text": "<script>alert(\"SYNTHETIC\")</script> RWY 4L CLSD",
+                    "effectiveStart": "2026-11-11T00:00:00Z",
+                    "effectiveEnd": "2026-11-12T00:00:00Z",
+                    "issued": "2026-11-10T20:00:00Z",
+                    "lastUpdated": "2026-11-10T21:00:00Z",
+                    "type": "SYNTHETIC_UNVERIFIED_TYPE",
+                    "unrecognizedSourceField": {
+                      "retained": true
+                    }
+                  },
+                  "notamEvent": {
+                    "scenario": "SYNTHETIC_UNVERIFIED_SCENARIO"
+                  },
+                  "notamTranslation": [
+                    {
+                      "formattedText": "<p>Synthetic translation only; do not parse as original notice.</p>"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "unknownResponseField": "preserved"
+        }
+      },
+      "provenance": {
+        "origin": "SYNTHETIC regression fixtures, not real FAA notices",
+        "captured_utc": null,
+        "sanitization_note": "All values and text are artificial test cases."
+      }
+    },
+    "KLAX": {
+      "response": {
+        "status": "SYNTHETIC_NO_SUCCESS_SEMANTICS",
+        "data": {
+          "geojson": [
+            {
+              "type": "Feature",
+              "geometry": null,
+              "properties": {
+                "coreNOTAMData": {
+                  "notam": {
+                    "id": "SYNTHETIC-REVIEW-LAX-FULL",
+                    "number": "SYNTHETIC-LAX-FULL",
+                    "text": "RWY 6L/24R CLSD",
+                    "effectiveStart": "2026-11-11T00:00:00Z",
+                    "effectiveEnd": "2026-11-12T00:00:00Z",
+                    "issued": "2026-11-10T20:00:00Z",
+                    "lastUpdated": "2026-11-10T21:00:00Z",
+                    "type": "SYNTHETIC_UNVERIFIED_TYPE",
+                    "unrecognizedSourceField": {
+                      "retained": true
+                    }
+                  },
+                  "notamEvent": {
+                    "scenario": "SYNTHETIC_UNVERIFIED_SCENARIO"
+                  },
+                  "notamTranslation": [
+                    {
+                      "formattedText": "<p>Synthetic translation only; do not parse as original notice.</p>"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "unknownResponseField": "preserved"
+        }
+      },
+      "provenance": {
+        "origin": "SYNTHETIC regression fixtures, not real FAA notices",
+        "captured_utc": null,
+        "sanitization_note": "All values and text are artificial test cases."
+      }
+    },
+    "KJFK": {
+      "response": {
+        "status": "SYNTHETIC_NO_SUCCESS_SEMANTICS",
+        "data": {
+          "geojson": [
+            {
+              "type": "Feature",
+              "geometry": null,
+              "properties": {
+                "coreNOTAMData": {
+                  "notam": {
+                    "id": "SYNTHETIC-REVIEW-JFK-EQUIPMENT",
+                    "number": "SYNTHETIC-JFK-EQUIPMENT",
+                    "text": "RWY 31L PAPI OTS",
+                    "effectiveStart": "2026-11-11T00:00:00Z",
+                    "effectiveEnd": "2026-11-12T00:00:00Z",
+                    "issued": "2026-11-10T20:00:00Z",
+                    "lastUpdated": "2026-11-10T21:00:00Z",
+                    "type": "SYNTHETIC_UNVERIFIED_TYPE",
+                    "unrecognizedSourceField": {
+                      "retained": true
+                    }
+                  },
+                  "notamEvent": {
+                    "scenario": "SYNTHETIC_UNVERIFIED_SCENARIO"
+                  },
+                  "notamTranslation": [
+                    {
+                      "formattedText": "<p>Synthetic translation only; do not parse as original notice.</p>"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "unknownResponseField": "preserved"
+        }
+      },
+      "provenance": {
+        "origin": "SYNTHETIC regression fixtures, not real FAA notices",
+        "captured_utc": null,
+        "sanitization_note": "All values and text are artificial test cases."
+      }
+    }
+  }
+}

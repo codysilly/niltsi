@@ -5,11 +5,16 @@ on:
     - cron: '4,14,24,34,44,54 * * * *'
 permissions:
   contents: write
+  pages: write
+  id-token: write
 concurrency:
   group: niltsi-atis-update
   cancel-in-progress: false
 jobs:
   update-atis:
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    outputs:
+      published: ${{ steps.publish.outputs.published }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,12 +23,12 @@ jobs:
           python-version: '3.12'
       - name: Retrieve atis.info ATIS snapshots
         run: python scripts/update_atis.py
-      - name: Commit ATIS data
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/atis.json
-          if ! git diff --cached --quiet; then
-            git commit -m "Update ATIS snapshot"
-            git push
-          fi
+      - name: Publish validated data with bounded conflict retries
+        id: publish
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: bash scripts/publish_data.sh data/atis.json
+  deploy:
+    needs: update-atis
+    if: needs.update-atis.outputs.published == 'true'
+    uses: ./.github/workflows/pages-deploy.yml

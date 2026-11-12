@@ -1,0 +1,18 @@
+{
+  "profile": "owner-observed-nms-envelope-v1-semantics-unverified",
+  "mode": "observed-nms",
+  "verified": false,
+  "verification_reference": null,
+  "structure_reference": "Owner reports authenticated production responses: KORD 41, KLAX 17, KJFK 41. Counts are observations, not completeness guarantees.",
+  "features_path": "data.geojson",
+  "notam_path": "properties.coreNOTAMData.notam",
+  "event_path": "properties.coreNOTAMData.notamEvent",
+  "translations_path": "properties.coreNOTAMData.notamTranslation",
+  "pagination": {
+    "mode": "unverified"
+  },
+  "lifecycle_verified": false,
+  "runway_associations_verified": false,
+  "completeness_verified": false,
+  "delta_protocol_verified": false
+}

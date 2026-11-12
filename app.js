@@ -3,6 +3,7 @@
 const runwayPairs={ORD:['04L/22R','04R/22L','09L/27R','09R/27L','09C/27C','10L/28R','10C/28C','10R/28L'],LAX:['06L/24R','06R/24L','07L/25R','07R/25L'],JFK:['04L/22R','04R/22L','13L/31R','13R/31L']};
 const airportInfo={ORD:{name:'Chicago O’Hare',icao:'KORD'},LAX:{name:'Los Angeles International',icao:'KLAX'},JFK:{name:'John F. Kennedy International',icao:'KJFK'}};
 let runwayData=null;
+let notamData=null,notamFeedError=false;
 let atisData=null; let atisRetrieved=null;
 const initial=['ORD','LAX','JFK'];let airports=initial.slice();const metars={};let lastFetch=null,loading=false,metarFeedError=false;
 const METAR_STALE_MS=65*60*1000;
@@ -13,13 +14,28 @@ function components(w,h){const a=(w.direction-h)*Math.PI/180,head=w.speed*Math.c
 function heading(id){return Number(id.slice(0,2))*10%360;}
 function ends(code){return runwayData?.airports?.[code]?.map(x=>x.id)||(runwayPairs[code]||[]).flatMap(pair=>pair.split('/'));}
 function runwayHeading(code,id){const end=runwayData?.airports?.[code]?.find(x=>x.id===id);return end?end.true_heading:heading(id);}
+function notamEntry(code){return notamData?.airports?.[icao(code)];}
+function notamCell(code,id){
+ const result=NotamFeed.status(notamEntry(code),id,notamFeedError);
+ const cls=result.state==='CLOSED'?'closed':result.state==='NOTAM RESTRICTION'?'notam-restriction':'unknown';
+ return `<td class="notam-status ${cls}" title="${esc(result.flags.join(' | '))}">${esc(result.state)}${result.state==='UNKNOWN'&&result.lastReportedClosure?'<div class="closed">Last reported CLOSED; verify source</div>':''}</td>`;
+}
+function notamBlock(code){
+ const entry=notamEntry(code), flags=NotamFeed.quality(entry,notamFeedError);
+ const notices=[...(entry?.notams||[]),...(entry?.observed_notams||[])];
+ const unresolved=notices.filter(n=>n.classification==='unresolved');
+ if(unresolved.length)flags.push(`${unresolved.length} UNRESOLVED NOTICE(S); inspect details`);
+ const records=notices.map(n=>`<article class="notam-record"><p><strong>${esc(n.id)}</strong> | ${esc(n.classification.toUpperCase())} | ${esc(NotamFeed.phase(n))}</p><p>Runway ends: ${esc(n.runway_ends.join(', ')||'Unresolved association')} | ${esc(n.reason)}</p><p>Effective UTC: ${esc(utc(n.effective_start_utc))} to ${esc(n.end_kind==='permanent'?'PERM':n.end_kind==='unverified'?'UNVERIFIED (see original source)':utc(n.effective_end_utc))}${n.end_kind==='estimated'?' (ESTIMATED; unverified)':''}</p><p>Schedule: ${esc(n.schedule||'None supplied')} | Retrieved: ${esc(utc(n.retrieved_utc))}</p><p class="notam-raw">${esc(n.text)}</p><p>Source: FAA NMS | Reference ${esc(n.source_reference||n.id)}</p>${Object.hasOwn(n,'original_feature')?`<details><summary>Preserved original notice and provenance (unverified)</summary><pre class="notam-raw">${esc(JSON.stringify({original_feature:n.original_feature,source_provenance:n.source_provenance},null,2))}</pre></details>`:''}</article>`).join('');
+ return `<section class="notams" aria-label="NOTAM coverage"><p class="${flags.length?'notam-warning':'unknown'}"><strong>NOTAM ${flags.length?'DEGRADED COVERAGE':'COVERAGE'}</strong> | ${esc(flags.join(' | ')||'Fresh verified snapshot; absence of closure does not establish availability.')}</p><p class="notam-meta">Last successful retrieval: ${esc(utc(entry?.last_success_utc))} | Attempt: ${esc(utc(entry?.attempted_utc))} | Stale after 15 minutes</p><details><summary>Inspect NOTAMs, unresolved notices, and source (${notices.length})</summary>${records||'<p>No accepted notices available. Check coverage warnings above.</p>'}<p><a href="https://notams.aim.faa.gov/notamSearch/" target="_blank" rel="noopener">FAA NOTAM Search</a> | Feed source: FAA NMS production</p><p>Automated interpretation may be incomplete. NO CLOSURE IDENTIFIED never means operationally open. Consult official briefing sources.</p></details></section>`;
+}
 function runwayRow(code,id,wind){
- if(!wind||!Number.isFinite(wind.direction)||!Number.isFinite(wind.speed))return `<tr><td>${esc(id)}</td><td class="unknown">—</td><td class="unknown">—</td><td class="unknown">—</td></tr>`;
+ const status=notamCell(code,id);
+ if(!wind||!Number.isFinite(wind.direction)||!Number.isFinite(wind.speed))return `<tr><td>${esc(id)}</td><td class="unknown">—</td><td class="unknown">—</td>${status}</tr>`;
  const bearing=runwayHeading(code,id), c=components(wind,bearing);
  const gust=Number.isFinite(wind.gust)&&wind.gust>wind.speed?components({...wind,speed:wind.gust},bearing):null;
  function longitudinal(v){const head=v.head>=0;return `<span class="${head?'headwind':Math.abs(v.head)<5?'tailwind-low':'tailwind-high'}">${head?v.head+' HW':Math.abs(v.head)+' TW'}</span>`;}
  function lateral(v){return `<span class="${v.cross<10?'crosswind-low':v.cross<15?'crosswind-mid':'crosswind-high'}">${v.cross} ${v.side}</span>`;}
- return `<tr><td title="${runwayData?.airports?.[code]?'FAA true alignment':'Approximate runway-number heading'}: ${bearing}°">${esc(id)}</td><td>${longitudinal(c)}${gust?`<div class="gust">G ${longitudinal(gust)}</div>`:''}</td><td>${lateral(c)}${gust?`<div class="gust">G ${lateral(gust)}</div>`:''}</td><td class="unknown">—</td></tr>`;
+ return `<tr><td title="${runwayData?.airports?.[code]?'FAA true alignment':'Approximate runway-number heading'}: ${bearing}°">${esc(id)}</td><td>${longitudinal(c)}${gust?`<div class="gust">G ${longitudinal(gust)}</div>`:''}</td><td>${lateral(c)}${gust?`<div class="gust">G ${lateral(gust)}</div>`:''}</td>${status}</tr>`;
 }
 // Conservative extraction: only explicit approach/departure clauses, never generic runway mentions.
 function advertised(text,kind){
@@ -67,7 +83,7 @@ function metarStatus(m){
 function render(){document.getElementById('cards').innerHTML=airports.map(code=>{const a=airportInfo[code],m=metars[code],r=ends(code),w=m?.wind;
  
  const link=`https://aviationweather.gov/api/data/metar?ids=${encodeURIComponent(icao(code))}&format=raw`;
- return `<article class="airport"><div class="airport-head"><div><div class="icao">${esc(code)}</div><div class="name">${esc(a?.name||'Airport not yet configured')}</div></div></div><div class="wind"><div><div class="sub">METAR WIND · ${m?.observed?esc(utc(m.observed)):'—'} · ${metarStatus(m)}</div><div class="reading">${windLabel(w)}</div><div class="sub">${m?.error?esc(m.error):w&&w.direction===null?'Variable direction: components unavailable':metarFeedError?'Feed refresh failed; showing last published observations':''}</div></div></div>${atisBlock(code)}<div class="runways">${r.length?`<table class="rw-table"><thead><tr><th>RWY</th><th>Head/Tail</th><th>Cross</th><th>Status</th></tr></thead><tbody>${r.map(id=>runwayRow(code,id,w)).join('')}</tbody></table>`:'<div class="empty">Runway data pending.</div>'}</div><button class="expand" type="button" data-expand="${code}" aria-expanded="false">Show details ▾</button><div class="details" id="detail-${code}" hidden><p><strong>METAR:</strong> ${esc(m?.raw||'No observation available.')}</p><p><strong>Observation:</strong> ${esc(utc(m?.observed))} · <strong>Last successful retrieval:</strong> ${esc(utc(lastFetch))} · <strong>Freshness:</strong> ${esc(metarState(m).toUpperCase())} (65-minute observation threshold)</p><p><a href="${link}" target="_blank" rel="noopener">Original METAR (Aviation Weather Center)</a></p><p><strong>Wind components:</strong> ${runwayData?.airports?.[code]?'FAA NASR true alignments':'Approximate runway designation headings (FAA data not loaded)'}; sustained and gust components where available.</p><p><strong>Runways:</strong> ${runwayData?.airports?.[code]?`FAA NASR effective ${esc(runwayData.effective_date)} · <a href="${esc(runwayData.source_url)}" target="_blank" rel="noopener">Source archive</a>`:'FAA NASR data not yet published; provisional runway list.'}</p><p><strong>NOTAM / closure status:</strong> Not connected; dashes do not mean open.</p><button type="button" data-remove="${code}">Remove airport</button></div></article>`;}).join('');
+ return `<article class="airport"><div class="airport-head"><div><div class="icao">${esc(code)}</div><div class="name">${esc(a?.name||'Airport not yet configured')}</div></div></div><div class="wind"><div><div class="sub">METAR WIND · ${m?.observed?esc(utc(m.observed)):'—'} · ${metarStatus(m)}</div><div class="reading">${windLabel(w)}</div><div class="sub">${m?.error?esc(m.error):w&&w.direction===null?'Variable direction: components unavailable':metarFeedError?'Feed refresh failed; showing last published observations':''}</div></div></div>${atisBlock(code)}${notamBlock(code)}<div class="runways">${r.length?`<table class="rw-table"><thead><tr><th>RWY</th><th>Head/Tail</th><th>Cross</th><th>Status</th></tr></thead><tbody>${r.map(id=>runwayRow(code,id,w)).join('')}</tbody></table>`:'<div class="empty">Runway data pending.</div>'}</div><button class="expand" type="button" data-expand="${code}" aria-expanded="false">Show details ▾</button><div class="details" id="detail-${code}" hidden><p><strong>METAR:</strong> ${esc(m?.raw||'No observation available.')}</p><p><strong>Observation:</strong> ${esc(utc(m?.observed))} · <strong>Last successful retrieval:</strong> ${esc(utc(lastFetch))} · <strong>Freshness:</strong> ${esc(metarState(m).toUpperCase())} (65-minute observation threshold)</p><p><a href="${link}" target="_blank" rel="noopener">Original METAR (Aviation Weather Center)</a></p><p><strong>Wind components:</strong> ${runwayData?.airports?.[code]?'FAA NASR true alignments':'Approximate runway designation headings (FAA data not loaded)'}; sustained and gust components where available.</p><p><strong>Runways:</strong> ${runwayData?.airports?.[code]?`FAA NASR effective ${esc(runwayData.effective_date)} · <a href="${esc(runwayData.source_url)}" target="_blank" rel="noopener">Source archive</a>`:'FAA NASR data not yet published; provisional runway list.'}</p><p><strong>NOTAM / closure status:</strong> See NOTAM coverage and notice details above; no operational availability claim is made.</p><button type="button" data-remove="${code}">Remove airport</button></div></article>`;}).join('');
  document.querySelectorAll('[data-expand]').forEach(b=>b.addEventListener('click',()=>{const el=document.getElementById('detail-'+b.dataset.expand);el.hidden=!el.hidden;b.setAttribute('aria-expanded',String(!el.hidden));b.textContent=el.hidden?'Show details ▾':'Hide details ▴';}));
  document.querySelectorAll('[data-remove]').forEach(b=>b.addEventListener('click',()=>{airports=airports.filter(x=>x!==b.dataset.remove);save();render();}));}
 function save(){try{localStorage.setItem('niltsi-airports',JSON.stringify(airports));}catch{}}
@@ -127,3 +143,15 @@ async function refreshAtis(){
  }catch(e){console.info('ATIS snapshot unavailable:',e.message);}
 }
 function clock(){document.getElementById('clock').textContent=new Date().toISOString().replace('T',' ').slice(0,19)+'Z';}clock();setInterval(clock,1000);render();refresh();refreshRunways();refreshAtis();setInterval(refresh,120000);setInterval(render,30000);setInterval(refreshRunways,3600000);setInterval(refreshAtis,120000);
+
+async function refreshNotams(){
+ try{
+  const response=await fetch(`./data/notams.json?t=${Date.now()}`,{cache:'no-store'});
+  if(!response.ok)throw Error('NOTAM feed unavailable');
+  const data=NotamFeed.validate(await response.json());
+  if(notamData && Date.parse(data.generated_utc)<Date.parse(notamData.generated_utc))throw Error('Older NOTAM snapshot');
+  notamData=data;notamFeedError=false;
+ }catch{notamFeedError=true;}
+ render();
+}
+refreshNotams();setInterval(refreshNotams,120000);

@@ -1,0 +1,20 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "SYNTHETIC-ORD-001",
+      "geometry": null,
+      "properties": {
+        "location": "KORD",
+        "text": "RWY 4L/22R CLSD",
+        "effectiveStart": "2026-11-10T00:00:00Z",
+        "effectiveEnd": "2026-11-12T00:00:00Z",
+        "schedule": null,
+        "status": "ACTIVE"
+      }
+    }
+  ],
+  "pagination": {"next": null, "total": 1},
+  "fixture_notice": "SYNTHETIC ONLY: these property names and pagination fields are not verified FAA fields."
+}

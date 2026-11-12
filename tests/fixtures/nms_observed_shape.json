@@ -1,0 +1,53 @@
+{
+  "status": "SYNTHETIC_STATUS_NO_SEMANTICS_ASSIGNED",
+  "data": {
+    "geojson": [
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -87.9,
+            41.9
+          ]
+        },
+        "properties": {
+          "coreNOTAMData": {
+            "notam": {
+              "id": "SYNTHETIC-SOURCE-ID-001",
+              "number": "SYNTHETIC-11-001",
+              "text": "SYNTHETIC ONLY RWY 4L/22R CLSD",
+              "effectiveStart": "2026-11-10T00:00:00Z",
+              "effectiveEnd": "2026-11-12T00:00:00Z",
+              "issued": "2026-11-09T20:00:00Z",
+              "lastUpdated": "2026-11-09T21:00:00Z",
+              "type": "SYNTHETIC_UNKNOWN_TYPE",
+              "otherUnverifiedField": {
+                "preserve": true
+              }
+            },
+            "notamEvent": {
+              "scenario": "SYNTHETIC_SCENARIO_NO_RUNWAY_INFERENCE"
+            },
+            "notamTranslation": [
+              {
+                "simpleText": "Synthetic simple translation; not authoritative text."
+              },
+              {
+                "formattedText": "<p>Synthetic formatted translation</p>"
+              },
+              {
+                "otherTranslationField": "preserve without inferring meaning"
+              }
+            ]
+          },
+          "otherProperty": "SYNTHETIC_PROVENANCE"
+        }
+      }
+    ],
+    "undocumentedMetadata": {
+      "doNotInferPagination": true
+    }
+  },
+  "fixture_notice": "SYNTHETIC values reflecting owner-observed paths only; not a real FAA response."
+}

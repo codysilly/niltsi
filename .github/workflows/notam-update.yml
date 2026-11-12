@@ -1,0 +1,72 @@
+name: Update FAA NOTAM data
+on:
+  schedule:
+    - cron: '3-58/5 * * * *'
+  workflow_dispatch:
+    inputs:
+      verify_only:
+        description: 'Offline tests and existing metadata only; do not commit or deploy'
+        type: boolean
+        default: true
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: niltsi-notam-update
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      published: ${{ steps.publish.outputs.published }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run offline unit tests
+        run: |
+          python -m unittest discover -s tests -v
+          node --test tests/*.test.js
+      # No live acquisition in Actions until a shared durable account-wide budget
+      # and documented delta synchronization protocol have been configured.
+      - name: Maintain UNKNOWN coverage metadata (live acquisition disabled)
+        id: retrieve
+        continue-on-error: true
+        run: python scripts/update_notams.py
+      - name: Report sanitized coverage only
+        if: always() && steps.retrieve.outcome != 'skipped'
+        run: |
+          python -c "import json; d=json.load(open('data/notams.json')); print({k: {f:v[f] for f in ('state','verified','complete','error','last_success_utc')} for k,v in d['airports'].items()})"
+      - name: Publish snapshot including degraded coverage metadata
+        id: publish
+        if: >-
+          (steps.retrieve.outcome == 'success' || steps.retrieve.outcome == 'failure') &&
+          github.ref == format('refs/heads/{0}', github.event.repository.default_branch) &&
+          (github.event_name == 'schedule' || inputs.verify_only == false)
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: bash scripts/publish_data.sh data/notams.json
+      - name: Retain sanitized snapshot for verification
+        if: always() && inputs.verify_only == true && (steps.retrieve.outcome == 'success' || steps.retrieve.outcome == 'failure')
+        uses: actions/upload-artifact@v4
+        with:
+          name: notam-verification-sanitized
+          path: data/notams.json
+          retention-days: 1
+      - name: Flag unverified or failed retrieval
+        if: steps.retrieve.outcome == 'failure'
+        run: |
+          echo 'FAA retrieval is failed or unverified. Coverage remains UNKNOWN. See sanitized coverage codes.'
+          exit 1
+  deploy:
+    needs: update
+    if: always() && needs.update.outputs.published == 'true'
+    uses: ./.github/workflows/pages-deploy.yml

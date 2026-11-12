@@ -1,0 +1,20 @@
+{
+  "profile": "synthetic-v1-NOT-FAA-VERIFIED",
+  "verified": false,
+  "verification_reference": null,
+  "features_path": "features",
+  "fields": {
+    "id": "id",
+    "airport": "properties.location",
+    "text": "properties.text",
+    "start": "properties.effectiveStart",
+    "end": "properties.effectiveEnd",
+    "schedule": "properties.schedule",
+    "status": "properties.status"
+  },
+  "pagination": {
+    "mode": "next-total",
+    "next_path": "pagination.next",
+    "total_path": "pagination.total"
+  }
+}

@@ -1,0 +1,70 @@
+name: Publish existing GitHub Pages site
+on:
+  workflow_call:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - '*.js'
+      - 'styles.css'
+      - 'data/**'
+      - '.github/workflows/pages-deploy.yml'
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: niltsi-pages-publication
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Inspect existing Pages setup without changing it
+        id: pages
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const {data: site} = await github.rest.repos.getPages(context.repo);
+            const mode = site.build_type;
+            if (!['legacy', 'workflow'].includes(mode)) throw Error('Unsupported Pages publishing mode');
+            if (mode === 'legacy' && (site.source?.branch !== context.payload.repository.default_branch || site.source?.path !== '/')) {
+              throw Error('Existing Pages source is not the default branch root; review before publishing');
+            }
+            core.setOutput('mode', mode);
+            core.info(`Existing Pages mode: ${mode}. Settings are unchanged.`);
+            if (mode === 'legacy') core.warning('Branch-based Pages has a soft limit of 10 builds/hour. Five-minute NOTAM publication exceeds that limit; review an Actions-mode migration before relying on this cadence. No settings were changed.');
+      - name: Request build for existing branch-based Pages site
+        if: steps.pages.outputs.mode == 'legacy'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.repos.requestPagesBuild(context.repo);
+            core.info('Existing branch-based Pages build requested. Check Pages build status for completion.');
+      - uses: actions/checkout@v4
+        if: steps.pages.outputs.mode == 'workflow'
+        with:
+          # Read latest data after obtaining the publication concurrency slot.
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+      - name: Package public frontend files only
+        if: steps.pages.outputs.mode == 'workflow'
+        run: |
+          mkdir -p _site/data
+          cp index.html app.js notams.js styles.css _site/
+          cp data/metars.json data/atis.json data/runways.json data/notams.json _site/data/
+          touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        if: steps.pages.outputs.mode == 'workflow'
+        with:
+          path: _site
+      - name: Deploy artifact to existing Actions-based Pages site
+        id: deploy
+        if: steps.pages.outputs.mode == 'workflow'
+        uses: actions/deploy-pages@v4
