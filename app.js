@@ -4,7 +4,17 @@ const runwayPairs={ORD:['04L/22R','04R/22L','09L/27R','09R/27L','09C/27C','10L/2
 const airportInfo={ORD:{name:'Chicago O’Hare',icao:'KORD'},LAX:{name:'Los Angeles International',icao:'KLAX'},JFK:{name:'John F. Kennedy International',icao:'KJFK'},MEM:{name:'Memphis International Airport',icao:'KMEM'}};
 let runwayData=null;
 const reader=typeof NotamReader==='undefined'?null:NotamReader;
-if(typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined'){runwayData=SPATCHIN_SYNTHETIC_PREVIEW.runways;reader?.set(SPATCHIN_SYNTHETIC_PREVIEW.notams);}
+let notamTransport=null;
+const syntheticNotamTransport=typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined'&&Boolean(SPATCHIN_SYNTHETIC_PREVIEW.useTransport);
+const notamSnapshots=typeof NotamSnapshots==='undefined'||(typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined'&&!syntheticNotamTransport)?null:NotamSnapshots.create({
+ fetchFn:(...args)=>syntheticNotamTransport?SPATCHIN_SYNTHETIC_PREVIEW.fetchSnapshot(...args):fetch(...args),baseURL:document.baseURI,allowSynthetic:syntheticNotamTransport,
+ onChange:state=>{notamTransport=state;reader?.set(state.snapshot,state.error&&!state.snapshot?'NOTAM data unavailable · '+state.error:state.error);render();}
+});
+function notamTransportBlock(code){
+ if(!notamSnapshots)return '';
+ return `<section class="notam-transport" aria-label="${esc(code)} NOTAM snapshot loading"><button type="button" data-notam-reload="${esc(code)}" aria-disabled="${Boolean(notamTransport?.refreshing)}">${notamTransport?.refreshing?'Loading NOTAM snapshot…':'Reload NOTAM snapshot'}</button><p>Published snapshot only · No live provider request</p><p>Last check: ${esc(notamTransport?.attempted_utc||'Not checked')} · Last successful check: ${esc(notamTransport?.checked_utc||'None')}</p></section>`;
+}
+if(typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined'){runwayData=SPATCHIN_SYNTHETIC_PREVIEW.runways;if(!syntheticNotamTransport)reader?.set(SPATCHIN_SYNTHETIC_PREVIEW.notams);}
 let atisData=null; let atisRetrieved=null;
 const initial=['MEM'];let airports=initial.slice();const metars={};let lastFetch=null,loading=false,metarFeedError=false;
 const METAR_STALE_MS=65*60*1000;
@@ -80,12 +90,15 @@ function metarStatus(m){
  if(state==='stale')return '<span class="metar-status metar-stale">METAR STALE · 65+ MIN</span>';
  return '<span class="metar-status metar-current">METAR CURRENT</span>';
 }
-function render(){reader?.before();document.getElementById('cards').innerHTML=airports.map(code=>{const a=airportInfo[code],m=metars[code],r=ends(code),w=m?.wind;
- 
+function render(){const reloadFocus=document.activeElement?.dataset?.notamReload;reader?.before();document.getElementById('cards').innerHTML=airports.map(code=>{const a=airportInfo[code],m=metars[code],r=ends(code),w=m?.wind;
+
  const link=`https://aviationweather.gov/api/data/metar?ids=${encodeURIComponent(icao(code))}&format=raw`;
- return `<article class="airport"><div class="airport-head"><div><div class="icao">${esc(code)}</div><div class="name">${esc(a?.name||'Airport not yet configured')}</div></div></div><div class="wind"><div><div class="sub">METAR WIND · ${m?.observed?esc(utc(m.observed)):'—'} · ${metarStatus(m)}</div><div class="reading">${windLabel(w)}</div><div class="sub">${m?.error?esc(m.error):w&&w.direction===null?'Variable direction: components unavailable':metarFeedError?'Feed refresh failed; showing last published observations':''}</div></div></div>${atisBlock(code)}<div class="runways">${r.length?`<table class="rw-table"><thead><tr><th>RWY</th><th>Head/Tail</th><th>Cross</th><th>Status</th></tr></thead><tbody>${r.map(id=>runwayRow(code,id,w)).join('')}</tbody></table>`:'<div class="empty">Runway data pending.</div>'}</div>${reader?.block(icao(code),r)||''}<button class="expand" type="button" data-expand="${code}" aria-expanded="false">Show details ▾</button><div class="details" id="detail-${code}" hidden><p><strong>METAR:</strong> ${esc(m?.raw||'No observation available.')}</p><p><strong>Observation:</strong> ${esc(utc(m?.observed))} · <strong>Last successful retrieval:</strong> ${esc(utc(lastFetch))} · <strong>Freshness:</strong> ${esc(metarState(m).toUpperCase())} (65-minute observation threshold)</p><p><a href="${link}" target="_blank" rel="noopener">Original METAR (Aviation Weather Center)</a></p><p><strong>Wind components:</strong> ${typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined'?'Synthetic preview only; no measured alignments':runwayData?.airports?.[code]?'FAA NASR true alignments':'Approximate runway designation headings (FAA data not loaded)'}; sustained and gust components where available.</p><p><strong>Runways:</strong> ${typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined'?'Synthetic MEM runway inventory; not a published FAA snapshot.':runwayData?.airports?.[code]?`FAA NASR effective ${esc(runwayData.effective_date)} · <a href="${esc(runwayData.source_url)}" target="_blank" rel="noopener">Source archive</a>`:'FAA NASR data not yet published; provisional runway list.'}</p><p><strong>NOTAM / closure status:</strong> Not connected; dashes do not mean open.</p><button type="button" data-remove="${code}">Remove airport</button></div></article>`;}).join('');
+ return `<article class="airport"><div class="airport-head"><div><div class="icao">${esc(code)}</div><div class="name">${esc(a?.name||'Airport not yet configured')}</div></div></div><div class="wind"><div><div class="sub">METAR WIND · ${m?.observed?esc(utc(m.observed)):'—'} · ${metarStatus(m)}</div><div class="reading">${windLabel(w)}</div><div class="sub">${m?.error?esc(m.error):w&&w.direction===null?'Variable direction: components unavailable':metarFeedError?'Feed refresh failed; showing last published observations':''}</div></div></div>${atisBlock(code)}<div class="runways">${r.length?`<table class="rw-table"><thead><tr><th>RWY</th><th>Head/Tail</th><th>Cross</th><th>Status</th></tr></thead><tbody>${r.map(id=>runwayRow(code,id,w)).join('')}</tbody></table>`:'<div class="empty">Runway data pending.</div>'}</div>${notamTransportBlock(code)}${reader?.block(icao(code),r)||''}<button class="expand" type="button" data-expand="${code}" aria-expanded="false">Show details ▾</button><div class="details" id="detail-${code}" hidden><p><strong>METAR:</strong> ${esc(m?.raw||'No observation available.')}</p><p><strong>Observation:</strong> ${esc(utc(m?.observed))} · <strong>Last successful retrieval:</strong> ${esc(utc(lastFetch))} · <strong>Freshness:</strong> ${esc(metarState(m).toUpperCase())} (65-minute observation threshold)</p><p><a href="${link}" target="_blank" rel="noopener">Original METAR (Aviation Weather Center)</a></p><p><strong>Wind components:</strong> ${typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined'?'Synthetic preview only; no measured alignments':runwayData?.airports?.[code]?'FAA NASR true alignments':'Approximate runway designation headings (FAA data not loaded)'}; sustained and gust components where available.</p><p><strong>Runways:</strong> ${typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined'?'Synthetic MEM runway inventory; not a published FAA snapshot.':runwayData?.airports?.[code]?`FAA NASR effective ${esc(runwayData.effective_date)} · <a href="${esc(runwayData.source_url)}" target="_blank" rel="noopener">Source archive</a>`:'FAA NASR data not yet published; provisional runway list.'}</p><p><strong>NOTAM reader:</strong> Published snapshot only; availability not assessed.</p><button type="button" data-remove="${code}">Remove airport</button></div></article>`;}).join('');
  document.querySelectorAll('[data-expand]').forEach(b=>b.addEventListener('click',()=>{const el=document.getElementById('detail-'+b.dataset.expand);el.hidden=!el.hidden;b.setAttribute('aria-expanded',String(!el.hidden));b.textContent=el.hidden?'Show details ▾':'Hide details ▴';}));
- document.querySelectorAll('[data-remove]').forEach(b=>b.addEventListener('click',()=>{airports=airports.filter(x=>x!==b.dataset.remove);save();render();}));reader?.after();}
+ document.querySelectorAll('[data-remove]').forEach(b=>b.addEventListener('click',()=>{airports=airports.filter(x=>x!==b.dataset.remove);save();render();}));reader?.after();
+ document.querySelectorAll('[data-notam-reload]').forEach(b=>b.addEventListener('click',()=>notamSnapshots?.refresh()));
+ if(reloadFocus)[...document.querySelectorAll('[data-notam-reload]')].find(b=>b.dataset.notamReload===reloadFocus)?.focus({preventScroll:true});
+}
 function save(){try{localStorage.setItem(AIRPORT_STORAGE_KEY,JSON.stringify(airports));}catch{}}
 function parseMetar(m){const speed=m.wspd===null||m.wspd===undefined?NaN:Number(m.wspd),direction=m.wdir===null||m.wdir===undefined||m.wdir==='VRB'?null:Number(m.wdir),gust=m.wgst===null||m.wgst===undefined?null:Number(m.wgst);return {wind:Number.isFinite(speed)?{speed,direction:Number.isFinite(direction)?direction:null,gust:Number.isFinite(gust)?gust:null}:null,observed:typeof m.obsTime==='number'?new Date(m.obsTime*1000).toISOString():(m.obsTime||m.reportTime||null),raw:m.rawOb||'',error:null};}
 async function refresh(){
@@ -131,6 +144,11 @@ async function refreshRunways(){
    const list=data.airports[code];
    if(!Array.isArray(list)||list.length!==count||list.some(x=>!x.id||!Number.isFinite(x.true_heading)))throw new Error(`Invalid ${code} runway data`);
   }
+  // Accept legacy snapshots without MEM; validate all eight ends when MEM arrives.
+  if(data.airports.MEM!==undefined){
+   const list=data.airports.MEM;
+   if(!Array.isArray(list)||list.length!==8||new Set(list.map(x=>x.id)).size!==8||list.some(x=>!/^((0[1-9]|[12][0-9]|3[0-6])[LRC]?)$/.test(x.id)||!Number.isFinite(x.true_heading)||x.true_heading<0||x.true_heading>=360))throw new Error('Invalid MEM runway data');
+  }
   runwayData=data;render();
  }catch(e){console.info('FAA runway data not yet available; retaining provisional headings:',e.message);}
 }
@@ -143,4 +161,4 @@ async function refreshAtis(){
   atisData=data;atisRetrieved=data.retrieved_utc;render();
  }catch(e){console.info('ATIS snapshot unavailable:',e.message);}
 }
-function clock(){document.getElementById('clock').textContent=new Date().toISOString().replace('T',' ').slice(0,19)+'Z';}clock();setInterval(clock,1000);render();refresh();refreshRunways();refreshAtis();setInterval(refresh,120000);setInterval(render,30000);setInterval(refreshRunways,3600000);setInterval(refreshAtis,120000);
+function clock(){document.getElementById('clock').textContent=new Date().toISOString().replace('T',' ').slice(0,19)+'Z';}clock();setInterval(clock,1000);render();refresh();refreshRunways();refreshAtis();notamSnapshots?.refresh();setInterval(refresh,120000);setInterval(render,30000);setInterval(refreshRunways,3600000);setInterval(refreshAtis,120000);

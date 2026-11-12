@@ -58,3 +58,5 @@ mark.scan-current{outline:2px solid white;box-shadow:0 0 0 4px #111827;scroll-ma
 
 /* Raw NOTAM reader */
 .reader-note{display:block;font-size:.7rem;white-space:normal}.notam-reader{margin:1rem 0;padding:1rem;border:1px solid #536171;border-radius:8px}.notam-reader details{margin:.65rem 0}.notam-reader summary{cursor:pointer}.reader-notice{padding:.75rem;border-top:1px solid #536171;overflow-wrap:anywhere}.reader-raw{white-space:pre-wrap}.reader-notice dl{display:grid;grid-template-columns:minmax(7rem,1fr) minmax(0,2fr);gap:.3rem}.reader-notice dd{margin:0}.reader-notice pre{white-space:pre-wrap;overflow-wrap:anywhere}.notam-reader button:focus-visible,.notam-reader summary:focus-visible,[data-reader-open]:focus-visible{outline:3px solid #80caff;outline-offset:3px}.synthetic-banner{padding:1rem;background:#493710;color:#fff;font-weight:bold;text-align:center}
+
+.notam-transport{margin-top:1rem;overflow-wrap:anywhere}.notam-transport p{font-size:.8rem;color:var(--muted,#aab7c5)}.notam-transport button[aria-disabled="true"]{opacity:.65}.notam-transport button:focus-visible{outline:3px solid #80caff;outline-offset:3px}
