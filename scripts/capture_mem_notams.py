@@ -17,7 +17,6 @@ from capture_storage import StorageError, persist_receipt, platform_storage
 
 AUTH_URL = 'https://api-nms.aim.faa.gov/v1/auth/token'
 DATA_URL = 'https://api-nms.aim.faa.gov/nmsapi/v1/notams?location=KMEM'
-QUARANTINE_FLOOR = datetime.fromisoformat('2026-11-13T07:44:03.558+00:00')
 REPOSITORY = Path(__file__).resolve().parents[1]
 
 
@@ -68,7 +67,7 @@ def check_reservation(reservation, now):
     not_before = timestamp(reservation.get('not_before_utc'))
     reserved = timestamp(reservation.get('reserved_utc'))
     expires = timestamp(reservation.get('expires_utc'))
-    if not_before < QUARANTINE_FLOOR or reserved < not_before or expires <= reserved:
+    if reserved < not_before or expires <= reserved:
         raise CaptureError('INVALID_RESERVATION_WINDOW')
     if now < not_before or now < reserved:
         raise CaptureError('QUARANTINE_OR_RESERVATION_NOT_YET_ELIGIBLE')
