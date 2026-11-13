@@ -11,6 +11,27 @@ before(async()=>{
  browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',headless:true});
 });
 after(async()=>{await browser?.close();server?.kill();});
+test('source and provider text retain CRLF, CR, LF and escaped markup in the DOM',async()=>{
+ const page=await browser.newPage();
+ try{
+  await page.route('**/*',route=>route.abort());
+  await page.setContent('<main id="reader"></main>');
+  await page.addScriptTag({content:require('node:fs').readFileSync(require('node:path').join(__dirname,'../notam-reader.js'),'utf8')});
+  const result=await page.evaluate(()=>{
+   const text='SYNTHETIC RWY 18L\r\nline two\rline three\n<img src=x onerror=alert(1)>&';
+   const translation='SYNTHETIC provider\r\nRWY 36R\r<unsafe>';
+   NotamReader.set({retrieved_utc:'2020-01-01T12:34:56Z',airports:{KMEM:{completeness:'UNKNOWN',notices:[{id:'SYNTHETIC',text,formatted_texts:[{text:translation}]}]}}});
+   document.getElementById('reader').innerHTML=NotamReader.block('KMEM',['18L','36R']);
+   const paragraphs=document.querySelectorAll('#reader-KMEM-all .reader-raw');
+   const visible=document.querySelector('.notam-reader').innerText;
+   return {original:paragraphs[0].textContent===text,translation:paragraphs[1].textContent===translation,injected:document.querySelectorAll('img,unsafe').length,
+    retrieval:visible.includes('Retrieved: 2020-01-01T12:34:56Z'),unknown:visible.includes('Completeness: UNKNOWN'),
+    scope:visible.includes('Snapshot records only; complete airport coverage has not been established. No closure interpretation is performed.'),
+    snapshotLabel:visible.includes('All notices in this snapshot (1)')};
+  });
+  assert.deepEqual(result,{original:true,translation:true,injected:0,retrieval:true,unknown:true,scope:true,snapshotLabel:true});
+ }finally{await page.close();}
+});
 for(const width of [1440,390])test(`synthetic reader, focus, SCAN and unavailable states at ${width}px`,async()=>{
  const context=await browser.newContext({viewport:{width,height:1000}}),page=await context.newPage(),external=[],errors=[];
  await context.route('**/*',route=>{if(new URL(route.request().url()).origin===base)return route.continue();external.push(route.request().url());return route.abort();});

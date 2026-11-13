@@ -54,7 +54,11 @@ test('fresh storage uses MEM only without writing preferences or changing SCAN',
   assert.equal(await page.evaluate(()=>icao('MEM')),'KMEM');
   assert.equal(await page.locator('.metar-status').textContent(),'METAR UNAVAILABLE');
   await page.waitForFunction(()=>document.querySelectorAll('.rw-table tbody tr').length===8);
-  assert.match(await page.locator('#cards').textContent(),/Chart-derived approximate true bearings/);
+  // Published MEM now uses NASR; SCAN must preserve its bearing/provenance labels.
+  assert.match(await page.locator('#cards').textContent(),/Wind components: FAA NASR true alignment/);
+  assert.deepEqual(await page.locator('.rw-table tbody tr td:first-child').allTextContents(),['09','18C','18L','18R','27','36C','36L','36R']);
+  assert.equal(await page.locator('.rw-table tbody tr > td.unknown:not(:has(button))').count(),16);
+  assert.equal(await page.locator('#detail-MEM').getByRole('link',{name:'Source archive',includeHidden:true}).getAttribute('href'),await page.evaluate(()=>runwayData.source_url));
   assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-airports')),null);
   assert.equal(await page.evaluate(()=>localStorage.getItem('niltsi-airports')),null);
   assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-scan-v1')),scan);

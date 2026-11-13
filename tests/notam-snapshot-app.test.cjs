@@ -39,20 +39,42 @@ test('valid optional eight-end MEM snapshot renders without wind; invalid MEM is
  }
 });
 
-test('published MEM inventory shows all eight ends without wind and labels chart-derived bearings',async()=>{
+test('published MEM NASR inventory preserves every source bearing and provenance without wind',async()=>{
  const runways=JSON.parse(readFileSync(join(__dirname,'../data/runways.json'),'utf8'));
+ assert.equal(runways.heading_reference,'TRUE');
+ assert.match(runways.source,/FAA NASR.*APT_RWY_END\.csv/);
+ assert.equal(new URL(runways.source_url).origin,'https://nfdc.faa.gov');
+ assert.match(new URL(runways.source_url).pathname,/\/28DaySub\/extra\/\d{2}_[A-Za-z]{3}_\d{4}_APT_CSV\.zip$/);
+ assert.match(runways.effective_date,/^\d{4}-\d{2}-\d{2}$/);
  const app=load({runways});await tick();
  assert.deepEqual(Array.from(app.run('ends("MEM")')),['09','18C','18L','18R','27','36C','36L','36R']);
- assert.equal(app.run('runwayHeading("MEM","09")'),91.3);
- assert.equal(app.run('runwayHeading("MEM","18L")'),178.3);
- assert.equal(app.run('runwayHeading("MEM","36R")'),358.3);
- assert.match(app.elements.get('cards').innerHTML,/Chart-derived approximate true bearings/);
- assert.match(app.elements.get('cards').innerHTML,/00253AD.PDF/);
+ for(const end of runways.airports.MEM){
+  assert.ok(Number.isFinite(end.true_heading)&&end.true_heading>=0&&end.true_heading<360);
+  assert.equal(app.run(`runwayHeading("MEM",${JSON.stringify(end.id)})`),end.true_heading);
+  const windRow=app.run(`runwayRow("MEM",${JSON.stringify(end.id)},{direction:100,speed:10})`);
+  assert.ok(windRow.includes(`FAA NASR true alignment: ${end.true_heading}°`));
+  assert.ok(end.pair.split('/').includes(end.id));
+ }
+ const html=app.elements.get('cards').innerHTML;
+ assert.equal((html.match(/<td class="unknown">—<\/td>/g)||[]).length,16);
+ assert.ok(html.includes(`FAA NASR effective ${runways.effective_date}`));
+ assert.ok(html.includes(`href="${runways.source_url}"`));
+ assert.ok(!html.includes('Chart-derived')&&!html.includes('Airport diagram'));
  assert.equal((app.elements.get('cards').innerHTML.match(/data-reader-open=/g)||[]).length,8);
  assert.equal(app.run('runwayBearingLabel("ORD")'),'FAA NASR true alignment');
  assert.ok(!app.run('runwaySourceBlock("ORD")').includes('airport diagram'));
- const pair=runways.airports.MEM.find(e=>e.id==='27');assert.equal(pair.true_heading,271.3);
- // A later NASR publication replaces the temporary chart metadata naturally.
+ assert.equal(app.run('runwayBearingLabel("MEM")'),'FAA NASR true alignment');
+});
+
+test('synthetic legacy chart metadata is labelled approximate and a later NASR snapshot replaces it',async()=>{
+ const runways=JSON.parse(readFileSync(join(__dirname,'../data/runways.json'),'utf8'));
+ runways.airport_metadata={MEM:{heading_method:'chart-derived-approximate',source_url:'https://example.invalid/SYNTHETIC-diagram.pdf',effective_date:'2020-01-01',valid_through:'2020-01-29'}};
+ const app=load({runways});await tick();
+ assert.equal(app.run('runwayBearingLabel("MEM")'),'Chart-derived approximate true bearing');
+ const html=app.elements.get('cards').innerHTML;
+ assert.match(html,/Chart-derived approximate true bearings/);
+ assert.match(html,/SYNTHETIC-diagram\.pdf/);
+ assert.match(html,/Diagram effective 2020-01-01 through 2020-01-29/);
  app.run('delete runwayData.airport_metadata;render()');
  assert.equal(app.run('runwayBearingLabel("MEM")'),'FAA NASR true alignment');
  assert.ok(!app.elements.get('cards').innerHTML.includes('Chart-derived'));
