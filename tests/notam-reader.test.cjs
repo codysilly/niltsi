@@ -1,6 +1,7 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const reader=require('../notam-reader.js');
+const snapshots=require('../notam-snapshots.js');
 test('explicit text references retain exact offsets and never infer reciprocals',()=>{
  const text='🙂 RWY 18L and 36R; TWY A near RWY 9.';
  const refs=reader.references(text,['18L','36R','09','27']);
@@ -41,4 +42,37 @@ test('formatted representations are escaped, indexed distinctly and never replac
  assert.match(html,/Original text unavailable/);assert.match(html,/LOCAL_FORMAT/);assert.match(html,/Condition text missing/);
  assert.ok(!html.includes('<script>'));assert.match(html,/&lt;script&gt;/);
  assert.match(reader.cell('KCLT','27',['09','27']),/Read NOTAMs \(1\)/);
+});
+
+test('retained snapshot keeps escaped collection warning alongside reload failure',()=>{
+ const warning='Fixed snapshot <unsafe>; complete airport coverage unknown; no automatic updates.';
+ reader.set({retrieved_utc:'2020-01-01T00:00:00Z',airports:{KMEM:{warning,completeness:'UNKNOWN',notices:[{text:'RWY 18L SYNTHETIC'}]}}},'Reload <failed>');
+ const html=reader.block('KMEM',['18L']);
+ assert.match(html,/Fixed snapshot &lt;unsafe&gt;; complete airport coverage unknown; no automatic updates\./);
+ assert.match(html,/Reload &lt;failed&gt;/);
+ assert.ok(!html.includes('<unsafe>')&&!html.includes('<failed>'));
+ assert.match(html,/Showing retained snapshot after reader error/);
+ reader.set(null,'Reload failed');
+ const missing=reader.block('KMEM',[]);
+ assert.match(missing,/NOTAM data unavailable/);
+ assert.match(missing,/Reload failed/);
+});
+
+test('loader failure and recovery preserve collection warning and original snapshot',async()=>{
+ const warning='Fixed snapshot; UNKNOWN coverage; no automatic updates.';
+ const data={retrieved_utc:'2020-01-01T00:00:00Z',airports:{KMEM:{warning,completeness:'UNKNOWN',notices:[{text:'SYNTHETIC RWY 18L\r\nunchanged'}]}}};
+ let failed=false;const states=[];
+ const loader=snapshots.create({baseURL:'https://snapshot.invalid/',fetchFn:async()=>({ok:!failed,status:failed?503:200,json:async()=>data}),onChange:state=>{
+  reader.set(state.snapshot,state.error);states.push({state,html:reader.block('KMEM',['18L'])});
+ }});
+ await loader.refresh();failed=true;await loader.refresh();failed=false;await loader.refresh();
+ const loaded=states.filter(s=>s.state.snapshot);
+ for(const {state,html} of loaded){
+  assert.equal(state.snapshot,data);
+  assert.ok(html.includes(warning));
+  assert.equal(state.snapshot.airports.KMEM.notices[0].text,'SYNTHETIC RWY 18L\r\nunchanged');
+ }
+ assert.ok(loaded.some(({html})=>html.includes(warning)&&html.includes('HTTP 503')&&html.includes('Showing retained snapshot')));
+ assert.ok(!states.at(-1).html.includes('HTTP 503'));
+ assert.ok(!states.at(-1).html.includes('Showing retained snapshot'));
 });
