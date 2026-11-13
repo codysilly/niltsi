@@ -55,7 +55,8 @@ test('first-load 404 is unavailable; absent MEM inventory does not fabricate run
  await context.route('**/data/runways.json?*',route=>route.fulfill({json:legacy}));
  try{await page.goto(base);await page.waitForFunction(()=>notamTransport?.error);assert.match(await page.locator('.notam-reader').innerText(),/NOTAM data unavailable/);assert.equal(await page.locator('.rw-table tbody tr').count(),0);assert.match(await page.locator('#cards').innerText(),/Runway data pending/);}finally{await context.close();}
 });
-for(const width of [1440,390])test(`published MEM runway diagram inventory at ${width}px`,async()=>{
+for(const width of [1440,390])test(`published MEM NASR inventory and source provenance at ${width}px`,async()=>{
+ const runways=JSON.parse(readFileSync(join(__dirname,'../data/runways.json'),'utf8'));
  const context=await browser.newContext({viewport:{width,height:1000}}),page=await context.newPage(),external=[],errors=[];
  await context.route('**/*',route=>{if(new URL(route.request().url()).origin===base)return route.continue();external.push(route.request().url());return route.abort();});
  await context.route('**/data/metars.json?*',route=>route.fulfill({json:{updated_utc:new Date().toISOString(),metars:[]}}));
@@ -63,9 +64,19 @@ for(const width of [1440,390])test(`published MEM runway diagram inventory at ${
  try{
   await page.goto(base);await page.waitForFunction(()=>document.querySelectorAll('.rw-table tbody tr').length===8);
   assert.deepEqual(await page.locator('.rw-table tbody tr td:first-child').allTextContents(),['09','18C','18L','18R','27','36C','36L','36R']);
-  assert.match(await page.locator('.runways .sub').innerText(),/Approximate true bearings/);
-  assert.equal(await page.locator('.runways .sub a').getAttribute('href'),'https://aeronav.faa.gov/d-tpp/2611/00253AD.PDF');
-  await page.locator('[data-expand="MEM"]').click();assert.match(await page.locator('#detail-MEM').innerText(),/Chart-derived approximate true bearings/);
+  assert.equal(await page.locator('.rw-table tbody tr > td.unknown:not(:has(button))').count(),16);
+  // Bearing tooltips apply to computed components; supply wind only in this test.
+  await page.evaluate(()=>{metars.MEM.wind={direction:100,speed:10};render();});
+  for(const end of runways.airports.MEM){
+   assert.equal(await page.locator('.rw-table tbody tr td:first-child').filter({hasText:new RegExp(`^${end.id}$`)}).getAttribute('title'),`FAA NASR true alignment: ${end.true_heading}°`);
+  }
+  assert.equal(await page.locator('.runways .sub').count(),0);
+  await page.locator('[data-expand="MEM"]').click();
+  const details=await page.locator('#detail-MEM').innerText();
+  assert.ok(details.includes('Wind components: FAA NASR true alignment'));
+  assert.ok(details.includes(`Runways: FAA NASR effective ${runways.effective_date}`));
+  assert.ok(!details.includes('Chart-derived'));
+  assert.equal(await page.locator('#detail-MEM').getByRole('link',{name:'Source archive'}).getAttribute('href'),runways.source_url);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
   assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-airports')),null);
   mkdirSync('/tmp/spatchin-mem-review',{recursive:true});await page.screenshot({path:`/tmp/spatchin-mem-review/${width}.png`,fullPage:true});
