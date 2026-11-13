@@ -6,22 +6,22 @@ publish a snapshot, modify the dashboard, or implement a recurring collector.
 
 The coordinating conversation holds the durable manual request log in
 [SPA-26](https://linear.app/spatchin/issue/SPA-26/one-time-mem-capture-manual-request-ledger).
-The user approved one designated collector: the existing Cloud task holding
-`/workspace/work/mem-budget`, with every other FAA NMS client paused. This manual
+SPA-26 designates PC1 as the sole collector (logical ID `mem-budget`), with every
+other FAA NMS client paused. The former Cloud designation is superseded. This manual
 exception does not replace or reset the archived ledger or provide a distributed
 lock. The script cannot verify Linear state or the identity of its executing task;
 those checks belong to the supervisor before execution.
 
-The native Windows storage fix does **not** designate this PC or transfer the
-Cloud reservation. Before PC execution, the coordinator must update SPA-26's
-collector binding and confirm every other client is paused. The logical
-`collector: mem-budget` field, one-auth/one-GET limits, and time guard are unchanged.
+The owner explicitly waived the conservative fixed project quarantine on November
+12, 2026. The hard-coded floor is removed; the recorded reservation's not-before,
+reservation time, expiry, request accounting and one-auth/one-GET limits remain.
+This waiver does not establish account-wide history or override a known service limit.
 
 ## Before execution
 
-1. Wait until at least **2026-11-13T07:44:03.558Z** (November 13, 1:44:03.558 a.m.
-   America/Chicago). Any later activity, uncertain exclusivity, or known cooldown
-   can extend the deadline. Elapsed time alone is not permission to run.
+1. Check the current SPA-26 reservation window and any known provider cooldown.
+   The former fixed 2026-11-13T07:44:03.558Z project deadline no longer applies.
+   Reservation shape, not-before and expiration are still enforced.
 2. Confirm all other clients remained paused. Recheck SPA-26 and the designated
    task. The coordinator must persist one reservation in SPA-26 and read it back
    before preparing the private reservation file. No reservation is issued by this
@@ -173,7 +173,7 @@ It must be validated on the actual intended POSIX filesystem before use.
 ## Offline validation
 
 `tests/test_mem_capture.py` injects synthetic credentials and a mock transport. It
-covers recorded counters before I/O, quarantine/expiry, exact endpoints, private
+covers recorded counters before I/O, reservation start/expiry, exact endpoints, private
 output, replay refusal, HTTP/auth/data errors, malformed/content-pointer responses,
 redirect refusal, expiration after authentication and sanitized failures.
 Run it with the repository's socket-blocked Python harness. It makes no live

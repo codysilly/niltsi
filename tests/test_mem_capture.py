@@ -73,15 +73,15 @@ class MemCaptureTests(unittest.TestCase):
             self.assertNotIn('synthetic-access-token', path.read_text())
             self.assertNotIn('synthetic-secret', path.read_text())
 
-    def test_quarantine_and_expiry_block_before_any_request_or_output(self):
+    def test_reservation_start_and_expiry_block_before_any_request_or_output(self):
         for now in (datetime(2026, 11, 12, 8, tzinfo=timezone.utc), datetime(2026, 11, 13, 9, tzinfo=timezone.utc)):
             with self.assertRaises(CaptureError):
                 self.run_capture(clock=lambda: now)
         self.assertEqual(self.calls, [])
         self.assertFalse(self.output.exists())
 
-    def test_lowered_floor_or_wrong_scope_cannot_create_an_allowance(self):
-        for changes in ({'not_before_utc': '2026-11-12T00:00:00Z'}, {'airport': 'KORD'},
+    def test_invalid_window_or_wrong_scope_cannot_create_an_allowance(self):
+        for changes in ({'not_before_utc': '2026-11-13T08:00:00Z'}, {'airport': 'KORD'},
                         {'collector': 'other-task'}, {'state': 'QUARANTINED'},
                         {'data_attempt_limit': 2}, {'reservation_id': 'invalid'}):
             with self.subTest(changes=changes), self.assertRaises(CaptureError):
@@ -167,3 +167,10 @@ class MemCaptureTests(unittest.TestCase):
         self.reservation['output_dir'] = str(REPOSITORY / 'data' / 'capture')
         with self.assertRaisesRegex(CaptureError, 'OUTSIDE_REPOSITORY'):
             check_reservation(self.reservation, NOW)
+
+    def test_owner_authorized_window_before_former_floor_is_accepted(self):
+        self.reservation.update(not_before_utc='2026-11-13T02:00:00Z',
+                                reserved_utc='2026-11-13T02:00:00Z',
+                                expires_utc='2026-11-13T03:00:00Z')
+        self.run_capture(clock=lambda: datetime(2026, 11, 13, 2, 30, tzinfo=timezone.utc))
+        self.assertEqual(len(self.calls), 2)
