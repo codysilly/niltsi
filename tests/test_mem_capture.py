@@ -3,6 +3,7 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 import stat
+import os
 import sys
 import tempfile
 import unittest
@@ -11,6 +12,7 @@ import urllib.request
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 from capture_mem_notams import (AUTH_URL, DATA_URL, CaptureError, NoRedirect,
                                 capture, check_reservation)
+from capture_storage import platform_storage
 
 NOW = datetime(2026, 11, 13, 8, tzinfo=timezone.utc)
 ENV = {'FAA_NMS_CLIENT_ID': 'synthetic-client', 'FAA_NMS_CLIENT_SECRET': 'synthetic-secret'}
@@ -60,9 +62,14 @@ class MemCaptureTests(unittest.TestCase):
         normalized = json.loads((self.output / 'normalized.private.json').read_text())
         self.assertEqual(normalized['query_context'], {'location': 'KMEM'})
         self.assertEqual(normalized['airports']['KMEM']['completeness'], 'UNKNOWN')
-        self.assertEqual(stat.S_IMODE(self.output.stat().st_mode) & 0o077, 0)
+        storage = platform_storage()
+        storage.verify_private(self.output)
+        if os.name == 'posix':
+            self.assertEqual(stat.S_IMODE(self.output.stat().st_mode) & 0o077, 0)
         for path in self.output.iterdir():
-            self.assertEqual(stat.S_IMODE(path.stat().st_mode) & 0o077, 0)
+            storage.verify_private(path)
+            if os.name == 'posix':
+                self.assertEqual(stat.S_IMODE(path.stat().st_mode) & 0o077, 0)
             self.assertNotIn('synthetic-access-token', path.read_text())
             self.assertNotIn('synthetic-secret', path.read_text())
 

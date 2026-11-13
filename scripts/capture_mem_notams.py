@@ -13,6 +13,7 @@ import urllib.request
 import uuid
 
 from normalize_notam_snapshot import normalize
+from capture_storage import StorageError, persist_receipt, platform_storage
 
 AUTH_URL = 'https://api-nms.aim.faa.gov/v1/auth/token'
 DATA_URL = 'https://api-nms.aim.faa.gov/nmsapi/v1/notams?location=KMEM'
@@ -22,6 +23,20 @@ REPOSITORY = Path(__file__).resolve().parents[1]
 
 class CaptureError(Exception):
     """Only fixed, non-sensitive diagnostic codes leave this module."""
+
+    def __init__(self, code):
+        allowed = {
+            'INVALID_RESERVATION_TIME', 'INVALID_RESERVATION', 'INVALID_RESERVATION_ID',
+            'INVALID_RESERVATION_WINDOW', 'QUARANTINE_OR_RESERVATION_NOT_YET_ELIGIBLE',
+            'RESERVATION_EXPIRED', 'PRIVATE_ABSOLUTE_OUTPUT_REQUIRED',
+            'OUTPUT_MUST_BE_OUTSIDE_REPOSITORY', 'REDIRECT_BLOCKED', 'UNAPPROVED_ENDPOINT',
+            'RESPONSE_TOO_LARGE', 'TRANSPORT_FAILED_ATTEMPT_CONSUMED', 'CREDENTIALS_MISSING',
+            'ATTEMPT_DIRECTORY_EXISTS_DO_NOT_RETRY', 'PRIVATE_STORAGE_SETUP_FAILED_DO_NOT_RETRY',
+            'AUTH_HTTP_FAILURE', 'AUTH_RESPONSE_INVALID', 'DATA_HTTP_FAILURE',
+            'INLINE_RESPONSE_OR_NORMALIZATION_REJECTED', 'PRIVATE_STORAGE_FAILED_DO_NOT_RETRY',
+            'FAILURE_RECEIPT_PERSISTENCE_FAILED_DO_NOT_RETRY', 'LOCAL_FAILURE_ATTEMPT_CONSUMED',
+        }
+        super().__init__(code if code in allowed else 'LOCAL_FAILURE_ATTEMPT_CONSUMED')
 
 
 def utc_now():
@@ -62,8 +77,11 @@ def check_reservation(reservation, now):
     value = reservation.get('output_dir')
     if not isinstance(value, str) or not Path(value).is_absolute():
         raise CaptureError('PRIVATE_ABSOLUTE_OUTPUT_REQUIRED')
-    output = Path(value).resolve()
-    if output == REPOSITORY or REPOSITORY in output.parents:
+    # Preserve the lexical path so the storage backend can reject junctions and
+    # symlinks instead of silently following them during resolve().
+    output = Path(value).absolute()
+    resolved = output.resolve()
+    if resolved == REPOSITORY or REPOSITORY in resolved.parents:
         raise CaptureError('OUTPUT_MUST_BE_OUTSIDE_REPOSITORY')
     return output
 
@@ -93,26 +111,15 @@ def send_once(request, limit):
         raise CaptureError('TRANSPORT_FAILED_ATTEMPT_CONSUMED') from None
 
 
-def private_write(path, content):
-    with open(os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), 'wb') as stream:
-        stream.write(content)
-        stream.flush()
-        os.fsync(stream.fileno())
+def private_write(path, content, storage=None):
+    (storage or platform_storage()).private_write(path, content)
 
 
-def receipt_write(output, receipt):
-    temporary = output / 'receipt.next'
-    private_write(temporary, json.dumps(receipt, indent=2).encode())
-    os.replace(temporary, output / 'receipt.json')
-    # Persist the directory entry before the next network attempt.
-    descriptor = os.open(output, os.O_RDONLY)
-    try:
-        os.fsync(descriptor)
-    finally:
-        os.close(descriptor)
+def receipt_write(output, receipt, storage=None):
+    persist_receipt(storage or platform_storage(), output, receipt)
 
 
-def capture(reservation, *, env=None, send=send_once, clock=utc_now):
+def capture(reservation, *, env=None, send=send_once, clock=utc_now, storage=None):
     output = check_reservation(reservation, clock())
     env = os.environ if env is None else env
     client_id, secret = env.get('FAA_NMS_CLIENT_ID'), env.get('FAA_NMS_CLIENT_SECRET')
@@ -120,15 +127,23 @@ def capture(reservation, *, env=None, send=send_once, clock=utc_now):
         raise CaptureError('CREDENTIALS_MISSING')
     try:
         # A used or failed attempt directory is never overwritten or reused.
-        output.mkdir(mode=0o700, parents=False, exist_ok=False)
+        storage = storage or platform_storage()
+        storage.create_attempt(output)
     except FileExistsError:
         raise CaptureError('ATTEMPT_DIRECTORY_EXISTS_DO_NOT_RETRY') from None
+    except Exception:
+        raise CaptureError('PRIVATE_STORAGE_SETUP_FAILED_DO_NOT_RETRY') from None
     receipt = {'ledger': 'SPA-26', 'reservation_id': reservation['reservation_id'],
-               'auth_attempts': 0, 'data_attempts': 0, 'state': 'RESERVED'}
+               'auth_attempts': 0, 'data_attempts': 0, 'state': 'RESERVED',
+               'storage_backend': storage.name}
     try:
+        # Exercise both initial publication and replacement with zero-attempt
+        # receipts before auth. The reserved directory is never removed on failure.
+        receipt_write(output, receipt, storage)
+        receipt_write(output, receipt, storage)
         receipt['auth_attempts'] = 1
         receipt['state'] = 'AUTH_ATTEMPT_RESERVED'
-        receipt_write(output, receipt)
+        receipt_write(output, receipt, storage)
         credentials = base64.b64encode((client_id + ':' + secret).encode()).decode()
         request = urllib.request.Request(AUTH_URL, data=b'grant_type=client_credentials',
                   headers={'Authorization': 'Basic ' + credentials,
@@ -146,7 +161,7 @@ def capture(reservation, *, env=None, send=send_once, clock=utc_now):
         check_reservation(reservation, clock())
         receipt['data_attempts'] = 1
         receipt['state'] = 'DATA_ATTEMPT_RESERVED'
-        receipt_write(output, receipt)
+        receipt_write(output, receipt, storage)
         request = urllib.request.Request(DATA_URL, headers={
             'Authorization': 'Bearer ' + token, 'nmsResponseFormat': 'GEOJSON',
             'Accept': 'application/json'}, method='GET')
@@ -159,7 +174,7 @@ def capture(reservation, *, env=None, send=send_once, clock=utc_now):
             receipt['request_id'] = request_id
         if status != 200:
             raise CaptureError('DATA_HTTP_FAILURE')
-        private_write(output / 'response.json', body)
+        private_write(output / 'response.json', body, storage)
         receipt['sha256'] = hashlib.sha256(body).hexdigest()
         try:
             payload = json.loads(body)
@@ -167,14 +182,21 @@ def capture(reservation, *, env=None, send=send_once, clock=utc_now):
                                    query_context={'location': 'KMEM'})
         except (ValueError, TypeError, KeyError):
             raise CaptureError('INLINE_RESPONSE_OR_NORMALIZATION_REJECTED') from None
-        private_write(output / 'normalized.private.json', json.dumps(normalized, ensure_ascii=False).encode())
+        private_write(output / 'normalized.private.json', json.dumps(normalized, ensure_ascii=False).encode(), storage)
         receipt.update(state='CAPTURED_UNVERIFIED', record_count=len(payload['data']['geojson']))
-        receipt_write(output, receipt)
+        receipt_write(output, receipt, storage)
         return receipt
     except Exception as error:
+        if isinstance(error, (StorageError, OSError)):
+            # Do not retry a failed persistence operation or pretend a failure
+            # receipt was durable. Local replay guard and SPA-26 remain consumed.
+            raise CaptureError('PRIVATE_STORAGE_FAILED_DO_NOT_RETRY') from None
         code = str(error) if isinstance(error, CaptureError) else 'LOCAL_FAILURE_ATTEMPT_CONSUMED'
         receipt.update(state='STOPPED_DO_NOT_RETRY', error_code=code)
-        receipt_write(output, receipt)
+        try:
+            receipt_write(output, receipt, storage)
+        except Exception:
+            raise CaptureError('FAILURE_RECEIPT_PERSISTENCE_FAILED_DO_NOT_RETRY') from None
         raise CaptureError(code) from None
 
 
