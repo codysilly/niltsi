@@ -74,10 +74,33 @@ for(const width of [1440,390])test(`synthetic reader, focus, SCAN and unavailabl
  assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
  }finally{await context.close();}
 });
-test('production entry never loads synthetic fixtures',async()=>{
- const context=await browser.newContext(),page=await context.newPage();
- await context.route('**/*',route=>new URL(route.request().url()).origin===base?route.continue():route.abort());
- try{await page.goto(base);await page.waitForSelector('.notam-reader');assert.equal(await page.evaluate(()=>typeof SPATCHIN_SYNTHETIC_PREVIEW),'undefined');assert.match(await page.locator('.notam-reader').innerText(),/NOTAM data unavailable/);}finally{await context.close();}
+for(const state of ['available','unavailable','synthetic-rejected'])test(`production entry isolates preview fixtures with snapshot ${state}`,async()=>{
+ const context=await browser.newContext(),page=await context.newPage(),external=[],errors=[];
+ const fixture={retrieved_utc:'2020-01-01T00:00:00Z',airports:{KMEM:{completeness:'UNKNOWN',warning:'SYNTHETIC TEST SNAPSHOT',notices:[{id:'TEST-ONLY',text:'SYNTHETIC TEST NOTICE'}]}}};
+ if(state==='synthetic-rejected')fixture.synthetic=true;
+ await context.route('**/*',route=>{if(new URL(route.request().url()).origin===base)return route.continue();external.push(route.request().url());return route.abort();});
+ // Control the NOTAM response: publishing a real file must not change this test.
+ await context.route('**/data/notams.json',route=>state==='unavailable'?route.fulfill({status:404,body:'test fixture unavailable'}):route.fulfill({json:fixture}));
+ page.on('pageerror',error=>errors.push(error.message));
+ try{
+  await page.goto(base);
+  await page.waitForFunction(()=>notamTransport&&!notamTransport.refreshing&&(notamTransport.snapshot||notamTransport.error));
+  assert.equal(await page.evaluate(()=>typeof SPATCHIN_SYNTHETIC_PREVIEW),'undefined');
+  assert.equal(await page.locator('.synthetic-banner').count(),0);
+  const reader=page.locator('.notam-reader');
+  if(state==='available'){
+   assert.ok((await reader.innerText()).includes('All notices in this snapshot (1)'));
+   assert.match(await reader.innerText(),/SYNTHETIC TEST SNAPSHOT/);
+   assert.doesNotMatch(await reader.innerText(),/NOTAM data unavailable/);
+   await page.locator('#reader-KMEM-all > summary').click();
+   assert.equal(await page.locator('#reader-KMEM-all .reader-raw').textContent(),'SYNTHETIC TEST NOTICE');
+  }else{
+   assert.match(await reader.innerText(),/NOTAM data unavailable/);
+   assert.equal(await page.locator('.reader-notice').count(),0);
+   if(state==='synthetic-rejected')assert.match(await reader.innerText(),/Synthetic NOTAM snapshot rejected outside preview/);
+  }
+  assert.deepEqual(external,[]);assert.deepEqual(errors,[]);
+ }finally{await context.close();}
 });
 for(const width of [1440,390])test(`offline normalized documentation example renders with SCAN at ${width}px`,async()=>{
  const {spawnSync}=require('node:child_process');
