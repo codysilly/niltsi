@@ -20,7 +20,7 @@ test('dashboard startup requests one local NOTAM snapshot; ordinary rerenders ne
  assert.equal(app.run('notamTransport.error'),null);assert.match(app.elements.get('cards').innerHTML,/retained report/);
  app.run('render();render();render()');assert.equal(app.calls.filter(u=>u.includes('notams.json')).length,1);
  assert.ok(app.calls.every(u=>new URL(u,'http://local.test').hostname==='local.test'));
- assert.match(app.elements.get('cards').innerHTML,/Availability not assessed/);
+ assert.match(app.elements.get('cards').innerHTML,/Reading only; no applicability or closure assessment/);
 });
 test('dashboard first-load failure is explicit and synthetic production data is refused',async()=>{
  for(const notams of [{ok:false,status:404},{ok:true,json:async()=>({...valid(),synthetic:true})}]){
@@ -59,7 +59,7 @@ test('published MEM NASR inventory preserves every source bearing and provenance
  assert.equal((html.match(/<td class="unknown">—<\/td>/g)||[]).length,16);
  assert.ok(html.includes(`FAA NASR effective ${runways.effective_date}`));
  assert.ok(html.includes(`href="${runways.source_url}"`));
- assert.ok(!html.includes('Chart-derived')&&!html.includes('Airport diagram'));
+ assert.ok(!html.includes('Chart-derived'));assert.match(html,/class="airport-diagram"/);assert.match(html,/00253AD.PDF/);
  assert.equal((app.elements.get('cards').innerHTML.match(/data-reader-open=/g)||[]).length,8);
  assert.equal(app.run('runwayBearingLabel("ORD")'),'FAA NASR true alignment');
  assert.ok(!app.run('runwaySourceBlock("ORD")').includes('airport diagram'));

@@ -59,7 +59,7 @@ test('new preferences take precedence and do not read or overwrite legacy or SCA
   assert.deepEqual(Object.fromEntries(app.stored), values);
 });
 test('missing or invalid new value migrates legacy without changing its bytes', () => {
-  for (const invalid of [undefined, '{broken', 'null', '{}', '"ORD"', '[]']) {
+  for (const invalid of [undefined, '{broken', 'null', '{}', '"ORD"']) {
     const legacy = '["LAX", "ORD", "LAX", "jfk", 3, "JFK", "ABCD"]';
     const app = load({[OLD]:legacy, ...(invalid === undefined ? {} : {[NEW]:invalid})});
     assert.deepEqual(app.airports(), ['LAX','ORD','JFK']);
@@ -75,10 +75,10 @@ test('validation retains order, first occurrence, uppercase-only rules and 30-ai
     assert.deepEqual(app.airports(), codes.slice(0,30));
   }
 });
-test('preserves existing nonempty-array filtering and empty-array default behavior', () => {
+test('preserves existing nonempty-array filtering and intentional empty-array behavior', () => {
   assert.deepEqual(load({[NEW]:'[null,"ord",42]', [OLD]:'["LAX"]'}).airports(), []);
   assert.deepEqual(load({[OLD]:'[null,"ord",42]'}).airports(), []);
-  assert.deepEqual(load({[NEW]:'[]', [OLD]:'[]'}).airports(), defaults);
+  assert.deepEqual(load({[NEW]:'[]', [OLD]:'[]'}).airports(), []);
 });
 test('missing and malformed preferences use defaults without writing them', () => {
   for (const values of [{}, {[NEW]:'{broken', [OLD]:'{broken'}, {[NEW]:'false', [OLD]:'{}'}]) {
@@ -95,7 +95,7 @@ test('subsequent saves use the new key and retain legacy for rollback', () => {
   assert.deepEqual(app.writes, [NEW, NEW]);
   app.run('airports=[];save();');
   assert.equal(app.stored.get(NEW), '[]');
-  assert.deepEqual(load(Object.fromEntries(app.stored)).airports(), ['LAX']);
+  assert.deepEqual(load(Object.fromEntries(app.stored)).airports(), []);
 });
 test('read errors fall back independently; unavailable storage retains usable session defaults', () => {
   const app = load({[OLD]:'["JFK"]'}, {readFailures:[NEW]});

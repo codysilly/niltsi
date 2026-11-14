@@ -27,7 +27,7 @@ beforeEach(async () => {
   // Exercise existing aviation fixtures as a saved selection, independent of defaults.
   await page.evaluate(()=>localStorage.setItem('spatchin-airports',JSON.stringify(['ORD','LAX','JFK'])));
   await page.reload();
-  await page.waitForFunction(()=>document.querySelectorAll('.rw-table tbody tr').length===32 && document.querySelector('.reading').textContent!=='—');
+  await page.waitForFunction(()=>document.querySelectorAll('.rw-table > tbody > tr.runway-row').length===32 && document.querySelector('.reading').textContent!=='—');
 });
 afterEach(async()=>{await context.close();assert.deepEqual(errors,[]);assert.deepEqual(external,[],'No external requests');});
 async function search(value) {
@@ -53,11 +53,11 @@ test('fresh storage uses MEM only without writing preferences or changing SCAN',
   assert.deepEqual(await page.locator('.icao').allTextContents(),['MEM']);
   assert.equal(await page.evaluate(()=>icao('MEM')),'KMEM');
   assert.equal(await page.locator('.metar-status').textContent(),'METAR UNAVAILABLE');
-  await page.waitForFunction(()=>document.querySelectorAll('.rw-table tbody tr').length===8);
+  await page.waitForFunction(()=>document.querySelectorAll('.rw-table > tbody > tr.runway-row').length===8);
   // Published MEM now uses NASR; SCAN must preserve its bearing/provenance labels.
   assert.match(await page.locator('#cards').textContent(),/Wind components: FAA NASR true alignment/);
-  assert.deepEqual(await page.locator('.rw-table tbody tr td:first-child').allTextContents(),['09','18C','18L','18R','27','36C','36L','36R']);
-  assert.equal(await page.locator('.rw-table tbody tr > td.unknown:not(:has(button))').count(),16);
+  assert.deepEqual(await page.locator('.rw-table > tbody > tr.runway-row td:first-child').allTextContents(),['09','18C','18L','18R','27','36C','36L','36R']);
+  assert.equal(await page.locator('.rw-table > tbody > tr.runway-row > td.unknown:not(:has(button))').count(),16);
   assert.equal(await page.locator('#detail-MEM').getByRole('link',{name:'Source archive',includeHidden:true}).getAttribute('href'),await page.evaluate(()=>runwayData.source_url));
   assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-airports')),null);
   assert.equal(await page.evaluate(()=>localStorage.getItem('niltsi-airports')),null);
@@ -144,7 +144,7 @@ test('airport, METAR, ATIS and runway behavior survives highlights and data refr
   await page.waitForFunction(()=>document.querySelectorAll('.atis-raw').length>0 && document.querySelector('.rw-table td[title]').title.startsWith('FAA NASR true alignment'));
   const dashboard = () => page.locator('#cards').evaluate(el=>({
     text:el.textContent,
-    runways:[...el.querySelectorAll('.rw-table tbody tr')].map(row=>[...row.cells].map(cell=>({text:cell.textContent,title:cell.title})))
+    runways:[...el.querySelectorAll('.rw-table > tbody > tr.runway-row')].map(row=>[...row.cells].map(cell=>({text:cell.textContent,title:cell.title})))
   }));
   const baseline = await dashboard();
   await search('ORD, METAR, ATIS, 04L');await page.waitForFunction(()=>document.querySelectorAll('#cards mark').length>10);
@@ -154,7 +154,7 @@ test('airport, METAR, ATIS and runway behavior survives highlights and data refr
   await page.locator('[data-expand="ATL"]').click();await page.locator('[data-remove="ATL"]').click();
   await page.evaluate(()=>Promise.all([refresh(),refreshAtis(),refreshRunways()]));
   await page.waitForFunction(()=>document.querySelectorAll('.airport').length===3 && document.querySelectorAll('#cards mark').length>10);
-  assert.equal(await page.locator('.rw-table tbody tr').count(),32);assert.match(await page.locator('.reading').first().textContent(),/KT/);
+  assert.equal(await page.locator('.rw-table > tbody > tr.runway-row').count(),32);assert.match(await page.locator('.reading').first().textContent(),/KT/);
   await page.locator('#scan-enabled').uncheck();assert.equal(await page.locator('#cards mark').count(),0);
   assert.deepEqual(await dashboard(),baseline,'Airport changes and local refreshes preserve original aviation data');
 });
