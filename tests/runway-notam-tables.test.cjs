@@ -35,5 +35,12 @@ test('zero verification requires explicit evidence; empty/missing/unknown are di
  assert.match(reader.availability('KMEM'),/UNKNOWN/);
  entry.zero_verified=true;entry.completeness='VERIFIED';assert.match(reader.availability('KMEM'),/UNKNOWN/);
  entry.verification_reference='SYNTHETIC review evidence';assert.match(reader.availability('KMEM'),/Explicitly verified zero/);
+ assert.match(reader.cell('KMEM','18R',['18R']),/Verified zero airport notices; no operational status/);
+ assert.doesNotMatch(reader.block('KMEM',[]),/Completeness unknown|coverage has not been established/);
  entry.notices.push({text:'record'});assert.match(reader.availability('KMEM'),/UNKNOWN/);
+});
+test('empty original string is preserved, and never replaced with provider representation',()=>{
+ reader.set({airports:{KMEM:{notices:[{text:'',formatted_texts:[{text:'SYNTHETIC translation'}]}]}}});
+ assert.match(reader.block('KMEM',[]),/<p class="reader-raw"><\/p>/);
+ assert.doesNotMatch(reader.block('KMEM',[]),/Original text unavailable/);
 });

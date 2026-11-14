@@ -47,7 +47,7 @@ for(const width of [1440,390])test(`synthetic reader, focus, SCAN and unavailabl
  await page.evaluate(()=>{render();});
  assert.equal(await page.evaluate(()=>document.activeElement.dataset.readerOpen),'KMEM-18L');
  assert.equal(await page.locator('#reader-KMEM-18L').getAttribute('hidden'),null);
- const meta=page.locator('#reader-KMEM-18L .reader-notice details').first();await meta.locator('summary').click();
+ const meta=page.locator('#reader-KMEM-18L .reader-notice details:not(.notice-provenance)').first();await meta.locator('summary').click();
  await page.evaluate(()=>render());assert.equal(await meta.getAttribute('open'),'');
  assert.equal(await page.evaluate(()=>document.activeElement.textContent),'Preserved source metadata');
  await b.focus();await page.evaluate(()=>render());assert.equal(await page.evaluate(()=>document.activeElement.dataset.readerOpen),'KMEM-18L');

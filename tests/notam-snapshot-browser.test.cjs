@@ -31,7 +31,7 @@ for(const width of [1440,390])test(`same-origin snapshot flow, retained failures
   assert.equal(requests,1);assert.equal(await page.locator('.rw-table > tbody > tr.runway-row').count(),8);
   await page.locator('[data-reader-open="KMEM-18L"]').click();
   const panel=page.locator('#reader-KMEM-18L');assert.match(await panel.innerText(),/lighting report/);
-  await panel.locator('summary').first().focus();
+  await panel.locator('details:not(.notice-provenance) > summary').first().focus();
   const prefs=await page.evaluate(()=>[localStorage.getItem('spatchin-airports'),localStorage.getItem('spatchin-scan-v1')]);
   mode='error';await page.evaluate(()=>notamSnapshots.refresh());
   assert.equal(await panel.getAttribute('hidden'),null);assert.equal(await page.evaluate(()=>document.activeElement.textContent),'Preserved source metadata');

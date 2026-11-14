@@ -4,6 +4,24 @@ const {spawn}=require('node:child_process'),{chromium}=require('playwright');
 const base='http://127.0.0.1:8770';let server,browser;
 before(async()=>{server=spawn('python3',['-B','-m','http.server','8770','--bind','127.0.0.1'],{stdio:'ignore'});for(let i=0;i<50;i++){try{if((await fetch(base)).ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,headless:true});});
 after(async()=>{await browser?.close();server?.kill();});
+test('catalog additions enforce 30 total; removable MEM and deliberate empty state persist',async()=>{
+ const context=await browser.newContext(),page=await context.newPage(),dialogs=[];
+ await context.route('**/*',r=>new URL(r.request().url()).origin===base?r.continue():r.abort());
+ page.on('dialog',async d=>{dialogs.push(d.message());await d.dismiss();});
+ try{
+  await page.goto(base);await page.waitForFunction(()=>typeof AirportCatalog!=='undefined');
+  assert.equal(await page.locator('#airport-options option').count(),130);
+  await page.fill('#iata','ZZZ');await page.locator('#add-form button').click();assert.match(dialogs.pop(),/approved C070 catalog/);
+  await page.fill('#iata','IND');await page.locator('#add-form button').click();assert.deepEqual(await page.evaluate(()=>airports),['MEM','IND']);
+  assert.equal(await page.evaluate(()=>icao('IND')),'IND');assert.match(await page.locator('[data-airport="IND"]').innerText(),/not yet configured/);
+  await page.evaluate(()=>{airports=AirportCatalog.slice(0,30);render();});
+  await page.fill('#iata','MEM');await page.locator('#add-form button').click();assert.match(dialogs.pop(),/Maximum 30/);
+  assert.equal(await page.locator('.airport').count(),30);
+  await page.evaluate(()=>{airports=['MEM'];render();});await page.locator('[data-expand="MEM"]').click();await page.locator('[data-remove="MEM"]').click();
+  assert.equal(await page.locator('.airport').count(),0);await page.reload();assert.equal(await page.locator('.airport').count(),0);
+  assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-airports')),'[]');
+ }finally{await context.close();}
+});
 const text='SYNTHETIC RWY 18R/36L\r\nUNICODE 🙂 <unsafe> &\rCR\nLF SCANINLINE';
 for(const width of [1440,390])test(`inline rows, keyboard, exact text, SCAN, independent observed UTC state at ${width}`,async()=>{
  const context=await browser.newContext({viewport:{width,height:1000}}),page=await context.newPage(),external=[],errors=[];
