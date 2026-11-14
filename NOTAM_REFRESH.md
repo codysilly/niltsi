@@ -1,9 +1,11 @@
 # SPA-10: one-PC, offline-tested refresh engine (not activated)
 
-This change adds request preparation and a dependency-injected collector. It does
-not make HTTP requests by itself, read environment credentials, initialize a
-production ledger, install a schedule, write the website, commit notices, or
-change v0.9. No new service, hosting, dependency or distributed infrastructure is
+The engine uses explicit injected dependencies. The separate `nms_http.py` adapter
+now implements one bounded HTTPS call when invoked; import/construction do not
+connect. `import_nms_history.py` defaults to a read-only review and writes only
+with an explicit approved digest. Neither integration has been activated on
+production. There are no environment credential reads, schedules, website writes,
+notice commits or v0.9 changes. No new service, hosting, dependency or distributed infrastructure is
 needed. `sqlite3` is part of the tested native Python runtime.
 
 The **private accepted outbox** is the publication handoff. The existing website
@@ -133,10 +135,10 @@ hours, stop with `DELTA_GAP`; do not query a shorter interval or claim recovery.
    with a justified `coverage_since` lower bound, within the delta lookback. Local
    download time or maximum record timestamp is not such evidence. Without it,
    baseline acceptance stops; no hidden timestamp assumption enables collection.
-3. The production HTTP runtime is intentionally injected. It needs separate source
-   review for TLS, explicit time/size limits, one call per prepared request, no
-   redirects/retries, safe auth handling and exit-status reporting. No built-in
-   client can accidentally authenticate from this PR.
+3. The HTTP adapter and explicit history importer described below have offline
+   native-Windows tests. They still require runtime/import review and separate
+   execution authorization. The adapter is not constructed or called by the engine
+   implicitly; a caller must inject it and explicit in-memory credentials.
 4. The exact completeness/retention and lifecycle semantics are not established
    by response structure. Neither 100 records nor an empty delta changes UNKNOWN.
 
@@ -147,15 +149,16 @@ an explicitly reviewed policy/adapter; do not invent a live experiment.
 ## Concrete activation runbook — future approval required; not executed here
 
 1. Review this source-only draft and native-Windows evidence. Keep the existing
-   static snapshot published. No live command, schedule or initializer ships here.
+   static snapshot published. The importer is separate and requires its own approval;
+   no collection launcher or schedule ships here.
 2. Designate this PC as the sole collector and obtain confirmation that every
    legacy/manual caller sharing the account remains paused or uses this gate.
    Bind a stable logical account such as `mem-budget` to one fixed local NTFS
    directory outside all repositories. Never create a second store to bypass a
    cooldown, a lost ledger, a pending reservation or the consumed SPA-26 exception.
-3. Under **separate accounting-import approval**, provision the private directory
-   and both files with `platform_storage`; then initialize `SCHEMA` once using a
-   reviewed importer. Import all known account attempts (including failed/uncertain
+3. Under **separate accounting-import approval**, use the explicit review/digest
+   workflow below. The importer creates the fresh directory and both files with
+   `platform_storage`, then initializes `SCHEMA` exactly once. Import all known account attempts (including failed/uncertain
    and the prior one-time capture), their conservative reservation/last-I/O UTC,
    outcome and scope. `other-data` participates in the three-minute gate; do not
    mislabel every location query as a documented bulk pull. Unknown scope/history
@@ -214,3 +217,159 @@ elapsed cooldown boundaries, response replay, conflicts/gaps, failure rollback,
 private outbox failure and credential-safe diagnostics. Child process tests also
 block sockets. This does not validate an unimplemented live content decoder or
 the production ledger/import, and does not authorize any provider request.
+
+
+## HTTP adapter integration (not activated)
+
+`nms_http.HTTPAdapter(timeout=30, max_bytes=64*1024*1024)` is a callable matching
+`transport(Request, limit)`. Construction/import never creates a connection.
+Only a subsequent explicit call does. Inject this callable into `collect`; it does
+not read environment credentials, install a launcher or bypass engine accounting.
+The initial decoder and justified baseline cutover are still required and are not
+implemented in this integration.
+
+The adapter validates the entire prepared stage/method/URL/query before opening a
+connection. The exact production authority is required. Auth, IL (including its
+documented classification suffix), classification-only GeoJSON, delta and content
+requests have separate shapes. Pagination, extra query keys, header injection,
+auth at the wrong endpoint, absolute cloud URLs, cross-host URLs and encoded
+content-path traversal are refused. No environment proxy is used. Only explicit
+auth/content-type/response-format/accept headers can pass validation.
+
+It uses `ssl.create_default_context()` with hostname/certificate verification,
+`http.client.HTTPSConnection`, a positive timeout at most 30 seconds, a bounded
+response read loop and an independent local response-byte budget. These are client
+resource bounds, not provider caps. Elapsed time is checked between operations;
+socket timeouts bound blocking network operations. Normal OS DNS resolver timing
+is not claimed as a hard cancellable wall-clock deadline. No worker thread is
+left to issue an unaccounted late request, and no redirect/retry is performed.
+
+All redirects are refused without following Location or reading their bodies.
+Other non-200 responses return only status and empty headers/body to the engine.
+Successful responses return exact bytes with no retained headers. Fixed adapter
+codes distinguish invalid requests, timeout, TLS/network/protocol failure,
+redirect refusal and excessive size. Upstream messages/headers/bodies, credentials
+and tokens never enter those diagnostics. The merged engine records its existing
+safe failure code and retains consumed accounting/snapshot bytes; it does not retry.
+Real TLS exchange has not been tested; fake HTTPS connections assert the normal
+verification configuration with actual socket/DNS access blocked.
+
+## Explicit history manifest and dry-run/write usage
+
+This is a separately approved future operator action. **Do not run a production
+import as part of this implementation review.** No target directory is inferred.
+An existing target (even an interrupted import) is always refused. Do not choose
+another target to bypass history; inspect/reconcile the first artifact instead.
+
+The following is a **synthetic schema example**, not production history. Replace
+all evidence, identities, counts and timestamps from reviewed records; never copy
+these invented example times into an actual account import. Paths must be absolute.
+Hashes are lowercase SHA256 and must match exact existing file bytes.
+
+```json
+{
+  "schema_version": 1,
+  "account": {
+    "logical_id": "SYNTHETIC-ACCOUNT",
+    "identity_reference": "SYNTHETIC operator account-binding record (not OAuth credentials)",
+    "identity_confirmed": true,
+    "all_clients_quiesced": true
+  },
+  "history": {
+    "inventory_complete": true,
+    "complete_through_utc": "2026-01-02T11:30:00Z",
+    "declaration_reference": "SYNTHETIC review of every account client/known attempt"
+  },
+  "attempts": [{
+    "id": "SYNTHETIC-ATTEMPT",
+    "kind": "other-data",
+    "reserved_utc": "2026-01-02T11:00:00Z",
+    "last_io_utc": "2026-01-02T11:01:00Z",
+    "last_io_is_upper_bound": false,
+    "outcome": "succeeded",
+    "known_call_count": 2,
+    "receipt": {"path": "C:/NmsReview/SYNTHETIC-receipt.json", "sha256": "<exact SHA256>"},
+    "calls": [
+      {"stage": "auth", "at_utc": "2026-01-02T11:00:00Z", "certainty": "observed"},
+      {"stage": "other-data", "at_utc": "2026-01-02T11:01:00Z", "certainty": "reserved"}
+    ]
+  }],
+  "uncertainties": [],
+  "prior_snapshot": {
+    "path": "C:/NmsReview/SYNTHETIC-prior-snapshot.json",
+    "bytes": 123,
+    "sha256": "<exact SHA256>",
+    "approved_for_display": true,
+    "origin_attempt_id": "SYNTHETIC-ATTEMPT"
+  }
+}
+```
+
+`kind` is bulk/delta/other-data; outcome is succeeded/failed/uncertain. Explicit
+known call counts must match all listed calls, including retries/reservations;
+repeated stages are imported with distinct ordinal keys, not deduplicated.
+Recognized repository SPA-26 receipts are checked against their defined auth/GET
+counters. Other receipt formats are preserved by hash/reference and require
+operator semantic review; their field names are not guessed into accounting.
+The importer never edits, moves or overwrites original receipts. It retains the
+exact manifest privately and preserves the prior accepted display snapshot bytes.
+
+`inventory_complete` attests that the operator enumerated all known attempts and
+all uncertainties; it does not erase unknown outcomes. Missing identity/history,
+unknown scopes, missing/invalid timestamps, contradictory time ranges, duplicate
+attempt IDs, wrong counters, missing origin evidence and hash changes reject the
+import with specific fixed diagnostics. Empty history cannot silently accompany
+an existing account snapshot whose origin attempt has not been supplied.
+
+For explicitly **bounded uncertain** attempts, set outcome=uncertain and
+last_io_is_upper_bound=true, provide the known reservation and latest possible I/O
+UTC from evidence, and add one uncertainty entry:
+`{"attempt_id":"SYNTHETIC-ATTEMPT","code":"TIMING_UNCERTAIN"}`.
+Codes also include OUTCOME_UNKNOWN and ADDITIONAL_CALLS_UNKNOWN. Unknown individual
+call times may be represented explicitly by `at_utc:null, certainty:"unknown-time"`
+only for such attempts. Their counters are retained, with UNVERIFIED_TIME in the
+private call row?not a fabricated timestamp. The report identifies untimed calls.
+These imports end HELD_UNCERTAINTY, history_verified=false, and cannot collect.
+There is no uncertainty-resolution, reset or automatic release command here.
+Unbounded uncertainty or an incomplete attempt inventory is rejected, not guessed.
+
+After separate operator approval, PowerShell usage is:
+
+```powershell
+# Read-only: no target is created, no SQLite connection is opened.
+py -B scripts/import_nms_history.py --manifest 'C:/NmsReview/reviewed-history.json' --target 'C:/NmsPrivate/approved-account'
+
+# Only after reviewing the full report and separately authorizing this import:
+py -B scripts/import_nms_history.py --manifest 'C:/NmsReview/reviewed-history.json' --target 'C:/NmsPrivate/approved-account' --write --approve '<approval_digest from the reviewed dry run>'
+```
+
+The digest binds manifest bytes, referenced snapshot/receipt hashes and the exact
+target. The write invocation revalidates and prints its review before any write.
+Changed input or target requires another review; it is never silently approved.
+Reports show planned attempt/call counts, timestamps, uncertainty/hold status,
+minimum cooldown boundaries and snapshot hash/size, never snapshot/receipt bodies.
+Those boundaries are computed lower limits, not authorization for a provider call.
+No credentials belong in this manifest or either command.
+
+The writer requires a fresh directory outside repositories and creates protected
+owner+SYSTEM files on native Windows NTFS (existing POSIX protections elsewhere).
+SQLite uses the merged SCHEMA, PERSIST rollback journal and synchronous=EXTRA.
+After counter/integrity/ACL/readback checks and a second input-hash validation,
+readiness is atomically persisted through the reused private-file replacement.
+`baseline=false`, `watermark=null`, and catalog empty are mandatory: the old MEM
+publication is an accepted display snapshot, not an all-classification baseline.
+
+An import-status.json PENDING marker gates the engine even if SQLite state has
+already been populated. Early interruption leaves this marker and partial files
+for inspection; there is no auto-cleanup/retry that might discard accounting.
+Only a fully validated READY marker permits normal Store use, and its digest must
+match the state row. A lost acknowledgement while publishing READY can mean the
+import finished; IMPORT_FINALIZATION_UNCERTAIN requires inspection, never another
+import over that path. Original receipts remain unchanged in either case.
+
+Remaining activation steps are unchanged in substance: review this draft and the
+actual history/evidence, authorize only the history import first, resolve any held
+uncertainty without discarding counters, implement/review the initial archive/AIXM
+decoder and justified cutover, then separately authorize a controlled collection
+call with the HTTPAdapter injected. No initial decoder, scheduler, Git publisher,
+provider call or new service is added by this integration.

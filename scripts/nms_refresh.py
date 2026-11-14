@@ -1,7 +1,8 @@
 """Single-PC collector engine. Injected transport only; private accepted outbox only.
 
-No HTTP implementation, environment reads, state initializer, scheduler, Git writer
-or public-file writer. Existing production accounting is never opened implicitly.
+HTTP transport and history import are separate explicit integrations. This engine
+has no environment reads, initializer, scheduler, Git writer or public-file writer.
+Existing production accounting is never opened implicitly.
 """
 import base64
 import copy
@@ -28,8 +29,8 @@ CREATE TABLE responses (attempt TEXT NOT NULL, stage TEXT NOT NULL, at TEXT NOT 
                         body BLOB NOT NULL, PRIMARY KEY(attempt,stage));
 PRAGMA user_version=1;
 '''
-# Schema is documentation for the separately approved history importer, not an
-# initializer. Tests provision synthetic stores explicitly in temporary directories.
+# Only the separate, approved history importer may create this schema. Store never
+# initializes it on open. Tests use synthetic stores in temporary directories.
 
 
 def encode(value):
@@ -47,6 +48,23 @@ class Store:
         self.account = account
         self.storage = storage or platform_storage()
 
+    def import_marker(self):
+        path = self.root/'import-status.json'
+        if not path.exists():
+            return None  # Existing pre-importer stores retain their original contract.
+        try:
+            self.storage.validate_location(path)
+            self.storage.verify_private(path)
+            with path.open('rb') as stream:
+                value = json.loads(stream.read(8193))
+            if value['schema'] != 1 or value['state'] != 'READY':
+                raise ValueError()
+            if not isinstance(value['approval_digest'],str) or len(value['approval_digest']) != 64:
+                raise ValueError()
+            return value
+        except Exception:
+            raise RefreshError('RECOVERY_REQUIRED') from None
+
     @contextmanager
     def connect(self):
         db = None
@@ -56,6 +74,7 @@ class Store:
             for path in (self.root, self.root/'account.sqlite3', self.root/'account.sqlite3-journal'):
                 self.storage.validate_location(path)
                 self.storage.verify_private(path)
+            self.import_marker()  # Pending/interrupted/uncertain imports cannot collect.
             db = sqlite3.connect((self.root/'account.sqlite3').as_uri()+'?mode=rw',
                                  uri=True, timeout=2, isolation_level=None)
             if db.execute('PRAGMA journal_mode=PERSIST').fetchone()[0] != 'persist':
@@ -98,6 +117,9 @@ class Store:
     def load(self, db):
         try:
             state = json.loads(db.execute('SELECT document FROM state WHERE singleton=1').fetchone()[0])
+            marker = self.import_marker()
+            if marker is not None and state.get('import_digest') != marker['approval_digest']:
+                raise ValueError()
             if (state['schema'] != 1 or state['account'] != self.account
                     or state['history_verified'] is not True or not isinstance(state['catalog'], dict)
                     or state['scope'] != 'all-classifications' or state['airport'] != 'KMEM'):
