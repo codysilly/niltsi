@@ -17,7 +17,7 @@ test('supplied literal examples, separators, boundaries and repeated references'
  for(const t of ['RWY 018R','RWY 36LX','RWY 36L_foo','XRWY 36L','RWY 99','118R RWY END'])assert.deepEqual(match(t),[],t);
  reader.set({airports:{KMEM:{notices:[{number:'11/9',text:'RWY 18R; RWY 18R'},{number:'11/9',text:'RWY 18R'}]}}});
  assert.match(reader.cell('KMEM','18R',ends),/Read NOTAMs \(2\)/);
- assert.match(reader.cell('KMEM','36L',ends),/No matching references; coverage UNKNOWN/);
+ assert.match(reader.cell('KMEM','36L',ends),/No literal matches/);
  assert.equal(reader.records('KMEM',ends).length,2);
 });
 test('numeric month, explicit year, distinct international family, missing IDs and stable ties',()=>{
@@ -35,7 +35,7 @@ test('zero verification requires explicit evidence; empty/missing/unknown are di
  assert.match(reader.availability('KMEM'),/UNKNOWN/);
  entry.zero_verified=true;entry.completeness='VERIFIED';assert.match(reader.availability('KMEM'),/UNKNOWN/);
  entry.verification_reference='SYNTHETIC review evidence';assert.match(reader.availability('KMEM'),/Explicitly verified zero/);
- assert.match(reader.cell('KMEM','18R',['18R']),/Verified zero airport notices; no operational status/);
+ assert.match(reader.cell('KMEM','18R',['18R']),/Verified zero/);
  assert.doesNotMatch(reader.block('KMEM',[]),/Completeness unknown|coverage has not been established/);
  entry.notices.push({text:'record'});assert.match(reader.availability('KMEM'),/UNKNOWN/);
 });

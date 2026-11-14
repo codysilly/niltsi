@@ -32,11 +32,13 @@ The reference's three columns, prominent identifiers, navy cards, compact header
 ATIS boxes, blue controls and thin borders are implemented. Deliberate differences:
 
 - Required WIP and coverage warnings, full dates and gust components add height.
-  Cards grow with actual raw text instead of clipping to the reference dimensions.
+  Long inline tables now have bounded keyboard-scrollable regions; complete raw
+  text remains accessible without truncation or growth to the entire notice length.
 - The UTC dropdown shows the supported observation only. TAF/forecast are clearly
   unavailable. No sample configurations, frequencies or weather were copied.
 - Airport names/diagram links are limited to verified existing metadata and links.
-  No diagram URL or ICAO is invented for visual completeness.
+  MEM's fixed chart URL/dates were recovered from repository history and restored
+  in the header; others are omitted. No diagram URL or ICAO is invented.
 - Each matching source representation remains distinct and complete; provenance
   details are disclosed separately. Expanded notices may require vertical scrolling.
 - Synthetic multi-airport screenshots are explicitly labelled test fixtures. The

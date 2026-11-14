@@ -11,6 +11,11 @@ detail row. Source records with duplicate IDs remain distinct. Repeated referenc
 within a record count once per runway; provider representations remain labelled
 separately and never replace missing original text. SCAN reveals collapsed rows
 and preserves CR, LF, CRLF, Unicode and escaped markup.
+Long inline tables use named, keyboard-focusable, viewport-bounded scroll regions
+with sticky runway captions. All source text stays in the DOM. Routine rerenders
+retain practical scroll position/focus; explicit SCAN navigation reveals its target
+inside the region and page viewport. Mobile source text is 14px, secondary text
+at least 12px in the data labels, and primary touch controls at least 44px tall.
 
 The airport-wide table contains every retrieved record, including unmatched
 notices. Scope indexes refer to that same table instead of duplicating full text.
@@ -31,6 +36,15 @@ verified zero requires all of: an empty notices array, `completeness: "VERIFIED"
 local publication assertions, **not inferred FAA fields**. No current production
 snapshot supplies this evidence. Elapsed snapshot age is shown without inventing
 a freshness threshold. Existing collection warnings survive failed reloads.
+The running dashboard shows this context once in the prominent per-airport
+summary, with concise row labels associated through aria-describedby. The
+standalone reader includes its own summary when not embedded in the dashboard.
+
+MEM's fixed diagram header link and dates are preserved from verified metadata
+in commit `a986cedf13bcde536987848b16bf91d2d1213eff`; no URL is constructed.
+The chart is effective 2026-10-29 through 2026-11-26, not automatically refreshed.
+No verified diagram links exist locally for ORD, LAX, JFK or catalog-only airports.
+The NASR bearing-source ZIP remains a separate source link, never a diagram.
 
 ## Airport and time controls
 

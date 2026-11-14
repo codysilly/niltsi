@@ -35,11 +35,11 @@ for(const width of [1440,390])test(`same-origin snapshot flow, retained failures
   const prefs=await page.evaluate(()=>[localStorage.getItem('spatchin-airports'),localStorage.getItem('spatchin-scan-v1')]);
   mode='error';await page.evaluate(()=>notamSnapshots.refresh());
   assert.equal(await panel.getAttribute('hidden'),null);assert.equal(await page.evaluate(()=>document.activeElement.textContent),'Preserved source metadata');
-  assert.match(await page.locator('.notam-reader').innerText(),/retained snapshot/);assert.match(await panel.innerText(),/lighting report/);
+  assert.match(await page.locator('.notam-summary').innerText(),/retained snapshot/);assert.match(await panel.innerText(),/lighting report/);
   assert.deepEqual(await page.evaluate(()=>[localStorage.getItem('spatchin-airports'),localStorage.getItem('spatchin-scan-v1')]),prefs);
   await page.locator('#scan-toggle').click();await page.locator('#scan-terms').fill('lighting report');await page.waitForFunction(()=>document.querySelectorAll('#cards mark').length>0);
   await page.locator('#scan-next').click();assert.ok(await page.locator('#reader-KMEM-18L mark').count()>0);
-  for(const bad of ['bad','synthetic']){mode=bad;await page.evaluate(()=>notamSnapshots.refresh());assert.match(await page.locator('.notam-reader').innerText(),/retained snapshot/);}
+  for(const bad of ['bad','synthetic']){mode=bad;await page.evaluate(()=>notamSnapshots.refresh());assert.match(await page.locator('.notam-summary').innerText(),/retained snapshot/);}
   mode='good';await page.locator('[data-notam-reload]').click();await page.waitForFunction(()=>notamTransport&&!notamTransport.refreshing&&!notamTransport.error);
   assert.equal(await page.evaluate(()=>document.activeElement.dataset.notamReload),'MEM');
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
@@ -53,7 +53,7 @@ test('first-load 404 is unavailable; absent MEM inventory does not fabricate run
  await context.route('**/data/notams.json',route=>route.fulfill({status:404,body:''}));
  const legacy=JSON.parse(readFileSync(join(__dirname,'../data/runways.json'),'utf8'));delete legacy.airports.MEM;delete legacy.airport_metadata;
  await context.route('**/data/runways.json?*',route=>route.fulfill({json:legacy}));
- try{await page.goto(base);await page.waitForFunction(()=>notamTransport?.error);assert.match(await page.locator('.notam-reader').innerText(),/NOTAM data unavailable/);assert.equal(await page.locator('.rw-table > tbody > tr.runway-row').count(),0);assert.match(await page.locator('#cards').innerText(),/Runway data pending/);}finally{await context.close();}
+ try{await page.goto(base);await page.waitForFunction(()=>notamTransport?.error);assert.match(await page.locator('.notam-summary').innerText(),/NOTAM data unavailable/);assert.equal(await page.locator('.rw-table > tbody > tr.runway-row').count(),0);assert.match(await page.locator('#cards').innerText(),/Runway data pending/);}finally{await context.close();}
 });
 for(const width of [1440,390])test(`published MEM NASR inventory and source provenance at ${width}px`,async()=>{
  const runways=JSON.parse(readFileSync(join(__dirname,'../data/runways.json'),'utf8'));

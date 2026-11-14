@@ -26,7 +26,7 @@ test('source and provider text retain CRLF, CR, LF and escaped markup in the DOM
    const visible=document.querySelector('.notam-reader').innerText;
    return {original:paragraphs[0].textContent===text,translation:paragraphs[1].textContent===translation,injected:document.querySelectorAll('img,unsafe').length,
     retrieval:visible.includes('Retrieved: 2020-01-01T12:34:56Z'),unknown:visible.includes('Completeness: UNKNOWN'),
-    scope:visible.includes('Snapshot records only; complete airport coverage has not been established. No closure interpretation is performed.'),
+    scope:visible.includes('Reading only; no applicability or closure assessment.'),
     snapshotLabel:visible.includes('All notices in this snapshot (1)')};
   });
   assert.deepEqual(result,{original:true,translation:true,injected:0,retrieval:true,unknown:true,scope:true,snapshotLabel:true});
@@ -67,9 +67,9 @@ for(const width of [1440,390])test(`synthetic reader, focus, SCAN and unavailabl
  mkdirSync('/tmp/spatchin-reader-review',{recursive:true});
  await page.evaluate(()=>{document.querySelectorAll('.notam-reader details').forEach(el=>el.open=false);document.getElementById('reader-KMEM-18L').hidden=false;});
  await page.screenshot({path:`/tmp/spatchin-reader-review/${width}.png`,fullPage:true});
- await page.selectOption('#preview-state','stale');assert.match(await page.locator('.notam-reader').innerText(),/source reports STALE/);
- await page.selectOption('#preview-state','error');assert.match(await page.locator('.notam-reader').innerText(),/refresh failed/);
- await page.selectOption('#preview-state','unavailable');assert.match(await page.locator('.notam-reader').innerText(),/NOTAM data unavailable/);
+ await page.selectOption('#preview-state','stale');assert.match(await page.locator('.notam-summary').innerText(),/source reports STALE/);
+ await page.selectOption('#preview-state','error');assert.match(await page.locator('.notam-summary').innerText(),/refresh failed/);
+ await page.selectOption('#preview-state','unavailable');assert.match(await page.locator('.notam-summary').innerText(),/NOTAM data unavailable/);
  assert.equal(await page.locator('.rw-table > tbody > tr.runway-row').count(),8);
  assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
  }finally{await context.close();}
@@ -87,9 +87,9 @@ for(const state of ['available','unavailable','synthetic-rejected'])test(`produc
   await page.waitForFunction(()=>notamTransport&&!notamTransport.refreshing&&(notamTransport.snapshot||notamTransport.error));
   assert.equal(await page.evaluate(()=>typeof SPATCHIN_SYNTHETIC_PREVIEW),'undefined');
   assert.equal(await page.locator('.synthetic-banner').count(),0);
-  const reader=page.locator('.notam-reader');
+  const reader=page.locator('.notam-summary');
   if(state==='available'){
-   assert.ok((await reader.innerText()).includes('All notices in this snapshot (1)'));
+   assert.ok((await page.locator('.notam-reader').innerText()).includes('All notices in this snapshot (1)'));
    assert.match(await reader.innerText(),/SYNTHETIC TEST SNAPSHOT/);
    assert.doesNotMatch(await reader.innerText(),/NOTAM data unavailable/);
    await page.locator('#reader-KMEM-all > summary').click();
