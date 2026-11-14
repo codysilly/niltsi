@@ -38,15 +38,15 @@ for(const width of [1440,390])test(`synthetic reader, focus, SCAN and unavailabl
  page.on('pageerror',e=>errors.push(e.message));
  try{
  await page.goto(base+'/preview/');
- await page.waitForSelector('.rw-table tbody tr');
- assert.equal(await page.locator('.rw-table tbody tr').count(),8);
+ await page.waitForSelector('.rw-table > tbody > tr.runway-row');
+ assert.equal(await page.locator('.rw-table > tbody > tr.runway-row').count(),8);
  assert.match(await page.locator('.synthetic-banner').innerText(),/SYNTHETIC — NO LIVE DATA/);
  assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-airports')),null);
  const b=page.locator('[data-reader-open="KMEM-18L"]');assert.match(await b.innerText(),/\(2\)/);
- await b.click();assert.equal(await page.locator('#reader-KMEM-18L').getAttribute('open'),'');
+ await b.click();assert.equal(await page.locator('#reader-KMEM-18L').getAttribute('hidden'),null);
  await page.evaluate(()=>{render();});
- assert.equal(await page.evaluate(()=>document.activeElement.parentElement.id),'reader-KMEM-18L');
- assert.equal(await page.locator('#reader-KMEM-18L').getAttribute('open'),'');
+ assert.equal(await page.evaluate(()=>document.activeElement.dataset.readerOpen),'KMEM-18L');
+ assert.equal(await page.locator('#reader-KMEM-18L').getAttribute('hidden'),null);
  const meta=page.locator('#reader-KMEM-18L .reader-notice details').first();await meta.locator('summary').click();
  await page.evaluate(()=>render());assert.equal(await meta.getAttribute('open'),'');
  assert.equal(await page.evaluate(()=>document.activeElement.textContent),'Preserved source metadata');
@@ -56,7 +56,7 @@ for(const width of [1440,390])test(`synthetic reader, focus, SCAN and unavailabl
  await page.locator('#scan-toggle').click();await page.locator('#scan-terms').fill('lighting report');
  await page.waitForFunction(()=>document.querySelectorAll('.notam-reader mark').length>0);
  await page.locator('#scan-next').click();
- assert.ok(await page.locator('.notam-reader details[open]').count()>0);
+ assert.ok(await page.locator('.notam-reader details[open], [data-reader-inline]:not([hidden])').count()>0);
  // Dynamic refresh remains searchable and preserves raw time tokens.
  await page.evaluate(()=>{SPATCHIN_SYNTHETIC_PREVIEW.notams.airports.KMEM.notices[0].text+=' DYNAMICREADER';render();});
  await page.locator('#scan-terms').fill('DYNAMICREADER');await page.waitForFunction(()=>document.querySelectorAll('.notam-reader mark').length>0);
@@ -65,12 +65,12 @@ for(const width of [1440,390])test(`synthetic reader, focus, SCAN and unavailabl
  assert.match(await page.locator('#reader-KMEM-all').textContent(),/PERM/);
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
  mkdirSync('/tmp/spatchin-reader-review',{recursive:true});
- await page.evaluate(()=>{document.querySelectorAll('.notam-reader details').forEach(el=>el.open=false);document.getElementById('reader-KMEM-18L').open=true;});
+ await page.evaluate(()=>{document.querySelectorAll('.notam-reader details').forEach(el=>el.open=false);document.getElementById('reader-KMEM-18L').hidden=false;});
  await page.screenshot({path:`/tmp/spatchin-reader-review/${width}.png`,fullPage:true});
  await page.selectOption('#preview-state','stale');assert.match(await page.locator('.notam-reader').innerText(),/source reports STALE/);
  await page.selectOption('#preview-state','error');assert.match(await page.locator('.notam-reader').innerText(),/refresh failed/);
  await page.selectOption('#preview-state','unavailable');assert.match(await page.locator('.notam-reader').innerText(),/NOTAM data unavailable/);
- assert.equal(await page.locator('.rw-table tbody tr').count(),8);
+ assert.equal(await page.locator('.rw-table > tbody > tr.runway-row').count(),8);
  assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
  }finally{await context.close();}
 });
@@ -110,7 +110,7 @@ for(const width of [1440,390])test(`offline normalized documentation example ren
  const context=await browser.newContext({viewport:{width,height:1000}}),page=await context.newPage(),external=[];
  await context.route('**/*',route=>{if(new URL(route.request().url()).origin===base)return route.continue();external.push(route.request().url());return route.abort();});
  try{
-  await page.goto(base+'/preview/');await page.waitForSelector('.rw-table tbody tr');
+  await page.goto(base+'/preview/');await page.waitForSelector('.rw-table > tbody > tr.runway-row');
   // Exercise the standalone reader against actual adapter output, with no feed wiring.
   await page.evaluate(data=>{
    NotamReader.set(data);const container=document.createElement('div');container.id='adapter-review';
